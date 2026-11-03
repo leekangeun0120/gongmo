@@ -1,0 +1,438 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<title>강은의 공모주 달력</title>
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta charset="utf-8">
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&family=IBM+Plex+Sans+KR:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap">
+<style>
+/* 레이아웃: 상단 요약 → 증권사 필터 → 월 달력 → 기업 카드 → 주린이 체크리스트 → 업데이트 방법. 청약서 도장(주홍)과 증권 잉크(청록) */
+:root{
+  --bg:#f7f8f6; --paper:#ffffff; --ink:#15302c; --muted:#5b6d69; --line:#dfe5e2;
+  --teal:#1f6f63; --teal-soft:#e3f0ec; --stamp:#d2492a; --stamp-soft:#fbe7e1;
+  --good:#2f7d3c; --good-soft:#e5f3e6; --warn:#b26b00; --warn-soft:#fbf0dc; --bad:#b3312a; --bad-soft:#f9e3e1;
+  --list:#3b5bb5; --list-soft:#e6ecfa;
+  --f-display:"Gowun Batang","Noto Serif KR",serif;
+  --f-body:"IBM Plex Sans KR","Apple SD Gothic Neo","Malgun Gothic",sans-serif;
+  --f-num:"IBM Plex Mono",ui-monospace,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0f1715; --paper:#16211e; --ink:#e4ece9; --muted:#9bb0aa; --line:#2a3a36;
+  --teal:#5cc0ad; --teal-soft:#1c3530; --stamp:#f07a5c; --stamp-soft:#3a201a;
+  --good:#7fcf8a; --good-soft:#1b3320; --warn:#e8b25a; --warn-soft:#3a2c14; --bad:#f08a80; --bad-soft:#3b1d1b;
+  --list:#8fa8f0; --list-soft:#1d2645; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0f1715; --paper:#16211e; --ink:#e4ece9; --muted:#9bb0aa; --line:#2a3a36;
+  --teal:#5cc0ad; --teal-soft:#1c3530; --stamp:#f07a5c; --stamp-soft:#3a201a;
+  --good:#7fcf8a; --good-soft:#1b3320; --warn:#e8b25a; --warn-soft:#3a2c14; --bad:#f08a80; --bad-soft:#3b1d1b;
+  --list:#8fa8f0; --list-soft:#1d2645; color-scheme:dark}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:15px;line-height:1.6;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:20px 60px}
+.wrap{max-width:1040px;margin:0 auto;display:flex;flex-direction:column;gap:36px}
+h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0;line-height:1.3}
+h1{font-size:clamp(28px,5vw,40px)}
+h2{font-size:24px}
+h3{font-size:19px}
+.num{font-family:var(--f-num);font-variant-numeric:tabular-nums}
+.eyebrow{font-size:12px;letter-spacing:.08em;color:var(--muted);font-weight:600}
+p{margin:0}
+.muted{color:var(--muted)}
+button{font:inherit;color:inherit;cursor:pointer}
+button:focus-visible,a:focus-visible,input:focus-visible{outline:2px solid var(--teal);outline-offset:2px}
+a{color:var(--teal)}
+
+/* 헤더 */
+header{display:flex;flex-direction:column;gap:10px}
+.head-row{display:flex;justify-content:space-between;gap:16px;align-items:flex-end;flex-wrap:wrap}
+.stamp{display:inline-flex;align-items:center;justify-content:center;border:2px solid var(--stamp);color:var(--stamp);
+  font-family:var(--f-display);font-weight:700;padding:4px 10px;border-radius:6px;transform:rotate(-4deg);font-size:14px;white-space:nowrap}
+.asof{font-size:13px;color:var(--muted)}
+.now{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
+.now-box{background:var(--paper);border:1px solid var(--line);border-radius:10px;padding:14px 16px;display:flex;flex-direction:column;gap:6px;min-width:0}
+.now-box b{font-size:13px;color:var(--muted);font-weight:600}
+.now-list{display:flex;flex-wrap:wrap;gap:6px}
+.chip{display:inline-flex;align-items:center;gap:4px;border:1px solid var(--line);background:var(--bg);border-radius:999px;padding:3px 10px;font-size:13px}
+.chip.sub{border-color:var(--teal);background:var(--teal-soft);color:var(--teal)}
+.chip.lst{border-color:var(--list);background:var(--list-soft);color:var(--list)}
+.chip.stamp-c{border-color:var(--stamp);background:var(--stamp-soft);color:var(--stamp)}
+
+.notices{display:flex;flex-direction:column;gap:6px;background:var(--stamp-soft);border-radius:10px;padding:12px 14px}
+.notices b{color:var(--stamp);font-size:13px}
+.notices a{font-size:13.5px}
+/* 필터 */
+.filters{display:flex;flex-direction:column;gap:8px}
+.fl-row{display:flex;flex-wrap:wrap;gap:6px}
+.fbtn{border:1px solid var(--line);background:var(--paper);border-radius:999px;padding:5px 12px;font-size:13px}
+.fbtn[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+
+/* 달력 */
+.cal-head{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+.tabs{display:flex;gap:6px}
+.legend{display:flex;gap:12px;font-size:12px;color:var(--muted);flex-wrap:wrap}
+.legend span::before{content:"";display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:4px;vertical-align:-1px}
+.lg-s::before{background:var(--teal)}
+.lg-l::before{background:var(--list)}
+.lg-m::before{background:var(--stamp)}
+.cal-scroll{overflow-x:auto}
+.cal{display:grid;grid-template-columns:repeat(7,minmax(96px,1fr));border-top:1px solid var(--line);border-left:1px solid var(--line);min-width:680px;background:var(--paper)}
+.dow{font-size:12px;font-weight:600;color:var(--muted);padding:6px 8px;border-right:1px solid var(--line);border-bottom:1px solid var(--line);background:var(--bg)}
+.dow.sun{color:var(--bad)}
+.day{min-height:104px;padding:6px;border-right:1px solid var(--line);border-bottom:1px solid var(--line);display:flex;flex-direction:column;gap:3px;min-width:0}
+.day.out{background:var(--bg)}
+.day.today{box-shadow:inset 0 0 0 2px var(--stamp)}
+.dnum{font-family:var(--f-num);font-size:12px;color:var(--muted)}
+.day.today .dnum{color:var(--stamp);font-weight:600}
+.ev{display:block;width:100%;text-align:left;border:0;border-radius:4px;padding:2px 6px;font-size:12px;line-height:1.35;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ev.s{background:var(--teal-soft);color:var(--teal);border-left:3px solid var(--teal)}
+.ev.l{background:var(--list-soft);color:var(--list);border-left:3px solid var(--list)}
+.ev.mine{background:var(--stamp-soft);color:var(--stamp);border-left-color:var(--stamp)}
+.ev.dim{opacity:.28}
+
+/* 카드 */
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px}
+.card{background:var(--paper);border:1px solid var(--line);border-radius:10px;padding:16px;display:flex;flex-direction:column;gap:10px;min-width:0;scroll-margin-top:20px}
+.card.flash{box-shadow:0 0 0 3px var(--stamp)}
+.card-top{display:flex;justify-content:space-between;gap:8px;align-items:flex-start}
+.card-top h3{font-size:18px}
+.mk{font-size:11px;font-weight:600;color:var(--muted);border:1px solid var(--line);border-radius:4px;padding:1px 6px;white-space:nowrap}
+.status{font-size:12px;font-weight:600;border-radius:999px;padding:2px 9px;white-space:nowrap}
+.st-now{background:var(--stamp-soft);color:var(--stamp)}
+.st-soon{background:var(--teal-soft);color:var(--teal)}
+.st-done{background:var(--bg);color:var(--muted)}
+.desc{font-size:14px}
+dl{display:grid;grid-template-columns:auto 1fr;gap:4px 12px;margin:0;font-size:13.5px}
+dt{color:var(--muted)}
+dd{margin:0;min-width:0}
+.broker{font-weight:600}
+.sig{display:flex;flex-direction:column;gap:4px;border-top:1px dashed var(--line);padding-top:10px}
+.sig-row{display:flex;gap:6px;align-items:center;font-size:13px}
+.dot{width:9px;height:9px;border-radius:50%;flex:none}
+.dot.g{background:var(--good)} .dot.y{background:var(--warn)} .dot.r{background:var(--bad)} .dot.n{background:var(--line)}
+.note{font-size:12.5px;color:var(--muted)}
+.mine-btn{align-self:flex-start;border:1px solid var(--stamp);color:var(--stamp);background:transparent;border-radius:6px;padding:4px 10px;font-size:13px}
+.mine-btn[aria-pressed="true"]{background:var(--stamp);color:var(--paper)}
+.empty{padding:24px;text-align:center;color:var(--muted);border:1px dashed var(--line);border-radius:10px}
+
+/* 체크리스트 */
+.steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:12px}
+.step{background:var(--paper);border:1px solid var(--line);border-radius:10px;padding:14px 16px;display:flex;gap:12px;min-width:0}
+.step input{width:20px;height:20px;flex:none;margin-top:3px;accent-color:var(--teal)}
+.step label{display:flex;flex-direction:column;gap:4px;cursor:pointer;min-width:0}
+.step strong{font-size:15px}
+.step span{font-size:13.5px;color:var(--muted)}
+.lights{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px}
+.light{border-radius:10px;padding:14px 16px;display:flex;flex-direction:column;gap:6px}
+.light.g{background:var(--good-soft)} .light.y{background:var(--warn-soft)} .light.r{background:var(--bad-soft)}
+.light h3{font-size:16px}
+.light ul{margin:0;padding-left:18px;font-size:13.5px}
+.terms{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:10px 24px}
+.term{display:flex;flex-direction:column;gap:2px;border-bottom:1px solid var(--line);padding-bottom:8px}
+.term b{font-size:14px}
+.term span{font-size:13.5px;color:var(--muted)}
+
+/* 최근 성적표 */
+.tbl-wrap{overflow-x:auto;background:var(--paper);border:1px solid var(--line);border-radius:10px}
+table{border-collapse:collapse;width:100%;min-width:520px;font-size:13.5px}
+th,td{padding:8px 12px;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{font-size:12px;color:var(--muted);font-weight:600}
+td.r{text-align:right}
+.up{color:var(--good);font-weight:600}.down{color:var(--bad);font-weight:600}
+
+/* 업데이트 */
+.how{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:12px}
+.how-box{background:var(--paper);border:1px solid var(--line);border-radius:10px;padding:16px;display:flex;flex-direction:column;gap:8px}
+.how-box .tag{font-size:12px;font-weight:600;color:var(--teal)}
+.links{display:flex;flex-wrap:wrap;gap:8px;font-size:13.5px}
+section{display:flex;flex-direction:column;gap:14px}
+.sec-head{display:flex;flex-direction:column;gap:4px}
+footer{font-size:12.5px;color:var(--muted);border-top:1px solid var(--line);padding-top:14px}
+
+/* 상세 패널 */
+.sheet-bg{position:fixed;inset:0;background:rgba(10,20,18,.45);z-index:20;display:flex;align-items:flex-end;justify-content:center}
+.sheet{background:var(--paper);color:var(--ink);width:100%;max-width:560px;max-height:85vh;overflow:auto;border-radius:14px 14px 0 0;
+  padding:20px max(20px,env(safe-area-inset-right,0px)) calc(24px + env(safe-area-inset-bottom,0px)) max(20px,env(safe-area-inset-left,0px));display:flex;flex-direction:column;gap:12px}
+@media (min-width:700px){.sheet-bg{align-items:center}.sheet{border-radius:14px}}
+.x{align-self:flex-end;border:1px solid var(--line);background:var(--bg);border-radius:6px;padding:3px 10px;font-size:13px}
+@media (prefers-reduced-motion:no-preference){.card.flash{transition:box-shadow .3s}}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+
+<header>
+  <div class="head-row">
+    <div style="display:flex;flex-direction:column;gap:6px">
+      <span class="eyebrow">주린이 공모주 노트</span>
+      <h1>강은의 공모주 달력</h1>
+    </div>
+    <span class="stamp">청약 주의보</span>
+  </div>
+  <p class="asof" id="asof">불러오는 중…</p>
+  <div class="notices" id="notices" hidden></div>
+  <div class="now" id="now"></div>
+</header>
+
+<section>
+  <div class="sec-head">
+    <h2>어느 증권사 계좌가 필요할까?</h2>
+    <p class="muted">공모주는 <b>주관사(그 회사를 상장시켜 주는 증권사)</b>에서만 청약할 수 있어요. 내 계좌가 있는 증권사를 눌러 보세요.</p>
+  </div>
+  <div class="filters">
+    <div class="fl-row" id="brokers"></div>
+  </div>
+</section>
+
+<section>
+  <div class="cal-head">
+    <h2>청약 · 상장 달력</h2>
+    <div class="tabs" id="tabs"></div>
+  </div>
+  <div class="legend"><span class="lg-s">청약일</span><span class="lg-l">상장일</span><span class="lg-m">내가 찜한 종목</span></div>
+  <div class="cal-scroll"><div class="cal" id="cal"></div></div>
+  <p class="note">칸을 누르면 기업 설명이 열려요. 휴대폰에서는 달력을 옆으로 밀어 보세요.</p>
+</section>
+
+<section>
+  <div class="sec-head">
+    <h2>기업 한눈에 보기</h2>
+    <p class="muted">신호등은 기관 수요예측 결과가 나온 종목만 켜져요. 결과는 보통 청약 1~2일 전에 나와요.</p>
+  </div>
+  <div class="fl-row" id="viewFilter"></div>
+  <div class="cards" id="cards"></div>
+</section>
+
+<section>
+  <div class="sec-head">
+    <h2>청약 전 체크리스트</h2>
+    <p class="muted">순서대로 체크해 보세요. 체크한 건 이 기기에 저장돼요.</p>
+  </div>
+  <div class="steps" id="steps"></div>
+</section>
+
+<section>
+  <div class="sec-head">
+    <h2>주린이 신호등</h2>
+    <p class="muted">절대 공식은 아니에요. 하지만 처음엔 이 정도만 봐도 큰 실수를 피할 수 있어요.</p>
+  </div>
+  <div class="lights">
+    <div class="light g"><h3>초록불 · 들어가 볼 만해요</h3><ul>
+      <li>기관 경쟁률 <b>500 : 1 이상</b></li>
+      <li>공모가가 희망 범위 <b>상단 이상</b>으로 확정</li>
+      <li>의무보유확약 <b>10% 이상</b></li>
+      <li>상장일 유통 물량 <b>30% 이하</b></li></ul></div>
+    <div class="light y"><h3>노란불 · 조금 더 살펴봐요</h3><ul>
+      <li>기관 경쟁률 100~500 : 1</li>
+      <li>공모가가 범위 중간이나 하단</li>
+      <li>확약 1~10%</li>
+      <li>같은 날 대어(큰 공모)와 겹침</li></ul></div>
+    <div class="light r"><h3>빨간불 · 쉬어 가도 돼요</h3><ul>
+      <li>기관 경쟁률 <b>100 : 1 미만</b></li>
+      <li>공모가가 범위 <b>하단보다 더 낮게</b> 확정</li>
+      <li>확약 <b>1% 미만</b> (기관이 바로 팔 수 있음)</li>
+      <li>유통 물량 40% 이상</li></ul></div>
+  </div>
+</section>
+
+<section>
+  <div class="sec-head">
+    <h2>최근 상장 성적표</h2>
+    <p class="muted">공모주가 늘 오르는 건 아니에요. 지난 몇 주 사이 상장한 종목의 첫날 시작 가격이에요.</p>
+  </div>
+  <div class="tbl-wrap"><table>
+    <thead><tr><th>종목</th><th>상장일</th><th class="r">공모가</th><th class="r">시초가</th><th class="r">공모가 대비</th></tr></thead>
+    <tbody id="recent"></tbody>
+  </table></div>
+</section>
+
+<section>
+  <div class="sec-head">
+    <h2>꼭 알아둘 말</h2>
+  </div>
+  <div class="terms">
+    <div class="term"><b>수요예측</b><span>일반 청약 전에 기관투자자들에게 "얼마에 몇 주 살래요?"를 먼저 물어보는 단계. 여기서 공모가가 정해져요.</span></div>
+    <div class="term"><b>확정 공모가</b><span>내가 주식을 사는 가격. 희망 범위(밴드) 위쪽에서 정해질수록 인기가 좋았다는 뜻이에요.</span></div>
+    <div class="term"><b>의무보유확약</b><span>기관이 "상장 후 15일~6개월은 안 팔게요"라고 약속한 비율. 높을수록 첫날 쏟아지는 매물이 적어요.</span></div>
+    <div class="term"><b>균등배정</b><span>최소 수량(보통 10주)만 넣어도 모두에게 똑같이 나눠 주는 방식. 주린이는 이것만 노려도 충분해요.</span></div>
+    <div class="term"><b>비례배정</b><span>돈을 많이 넣을수록 더 받는 방식. 경쟁률이 높으면 큰돈을 넣어도 몇 주 못 받아요.</span></div>
+    <div class="term"><b>증거금</b><span>청약할 때 미리 넣는 돈. 보통 신청 금액의 50%. 못 받은 만큼은 환불일에 돌려줘요.</span></div>
+    <div class="term"><b>환불일</b><span>청약 마감 2영업일 뒤. 이 돈으로 다음 공모주에 또 청약하는 걸 '릴레이 청약'이라고 해요.</span></div>
+    <div class="term"><b>스팩(SPAC)</b><span>다른 회사와 합병하려고 만든 서류상 회사. 공모가 2,000원 고정이고 움직임이 작아요.</span></div>
+    <div class="term"><b>유통 물량</b><span>상장 첫날 바로 팔 수 있는 주식 비율. 많으면 가격이 눌리기 쉬워요.</span></div>
+  </div>
+</section>
+
+<section>
+  <div class="sec-head">
+    <h2>이 페이지는 어떻게 갱신되나요</h2>
+    <p class="muted">하루 세 번(오전 8시, 낮 12시 반, 저녁 6시) 금융감독원 DART 공시를 자동으로 확인해요. 새 공모주가 신고되거나 일정이 바뀌면 위쪽 '새 소식'에 바로 떠요. 기업 설명과 수요예측 결과는 일주일에 한 번 Claude가 채워 넣어요.</p>
+  </div>
+  <div class="links">
+    <a href="https://www.38.co.kr/html/fund/index.htm?o=k" target="_blank" rel="noopener">38커뮤니케이션 청약일정</a>
+    <a href="https://dart.fss.or.kr" target="_blank" rel="noopener">DART 증권신고서</a>
+    <a href="https://kind.krx.co.kr" target="_blank" rel="noopener">KIND 공식 일정</a>
+  </div>
+</section>
+
+<footer>투자 권유가 아니라 공부용 정리예요. 숫자와 날짜는 증권신고서 정정에 따라 바뀔 수 있고, 최종 확인은 주관 증권사 공고와 DART에서 해 주세요.</footer>
+</div>
+
+<div class="sheet-bg" id="sheetBg" hidden><div class="sheet" id="sheet" role="dialog" aria-modal="true"></div></div>
+
+<script>
+let IPOS=[];
+const RECENT=[
+ ["영광","11.02",17000,21350],["인텔리빅스","10.30",9000,19290],["크리에이츠","10.30",15000,12000],
+ ["티앤이코리아","10.29",15300,30350],["디티에스","10.23",18500,32350],["엘리스그룹","10.20",90500,75700],["진코스텍","10.15",23500,24000]
+];
+const STEPS=[
+ ["주관사 계좌 미리 만들기","청약 당일 개설하면 바로 청약이 안 되는 증권사도 있어요. 위 증권사 목록을 보고 미리 만들어 두세요."],
+ ["회사가 뭘 하는지 한 줄로 말해 보기","카드의 설명을 읽고 '이 회사는 ○○을 만들어 판다'고 말할 수 있으면 통과."],
+ ["기관 수요예측 결과 보기","경쟁률이 높을수록 좋아요. 100 : 1이 안 되면 조심."],
+ ["확정 공모가 위치 보기","희망 범위의 상단 이상이면 좋은 신호, 하단 미만이면 경고."],
+ ["의무보유확약 비율 보기","10% 넘으면 든든, 1% 미만이면 첫날 매물이 쏟아질 수 있어요."],
+ ["최소 증거금 준비","균등배정은 보통 10주 × 공모가 × 50%. 예) 공모가 12,000원이면 6만 원."],
+ ["같은 날 겹치는 종목 확인","돈이 한 곳에 묶이면 다른 청약을 못 해요. 환불일도 같이 보세요."],
+ ["상장일 매도 계획 세우기","'시초가에 판다' '+○%면 판다'처럼 미리 정해 두면 흔들리지 않아요."]
+];
+
+const TODAY=(()=>{const t=new Date();return new Date(t.getFullYear(),t.getMonth(),t.getDate());})();
+const D=s=>{const [y,m,d]=s.split("-").map(Number);return new Date(y,m-1,d)};
+const won=n=>n.toLocaleString("ko-KR");
+const md=s=>{const x=D(s);return `${x.getMonth()+1}/${x.getDate()}`};
+let store={};try{store=JSON.parse(localStorage.getItem("gongmo-v1")||"{}")}catch(e){}
+store.mine=store.mine||{};store.steps=store.steps||{};
+const save=()=>{try{localStorage.setItem("gongmo-v1",JSON.stringify(store))}catch(e){}};
+let broker=null, view="upcoming";
+const months=[[2026,10],[2026,11]];
+let mIdx=TODAY>=new Date(2026,11,1)?1:0;
+
+function status(x){
+  if(!x.s)return["새 종목","st-now"];
+  const s=D(x.s),e=D(x.e);
+  if(TODAY>=s&&TODAY<=e)return["청약 중","st-now"];
+  if(TODAY<s){const dd=Math.round((s-TODAY)/864e5);return[`D-${dd}`,"st-soon"]}
+  return["청약 끝","st-done"];
+}
+function priceText(x){
+  if(!x.band||!x.band[0])return `<span class="muted">확인 중</span>`;
+  if(x.fix){return `<span class="num">${won(x.fix)}원</span> 확정 <span class="muted">(희망 ${won(x.band[0])}~${won(x.band[1])})</span>`}
+  if(x.band[0]===x.band[1])return `<span class="num">${won(x.band[0])}원</span>`;
+  return `희망 <span class="num">${won(x.band[0])}~${won(x.band[1])}원</span>`;
+}
+function minDeposit(x){const p=x.fix||(x.band&&x.band[1]);if(!p)return "-";return won(Math.round(p*10*0.5))}
+function signals(x){
+  if(x.spac)return `<div class="sig"><div class="sig-row"><span class="dot n"></span>스팩은 신호등 대신 '원금 보존형'에 가깝다고 봐요.</div></div>`;
+  if(!x.band||x.inst==null&&x.fix==null)return `<div class="sig"><div class="sig-row"><span class="dot n"></span>수요예측 결과 기다리는 중</div></div>`;
+  let r=[];
+  if(x.inst!=null){const c=x.inst>=500?"g":x.inst>=100?"y":"r";r.push([c,`기관 경쟁률 <span class="num">${x.inst} : 1</span>`])}
+  if(x.fix){const c=x.fix>=x.band[1]?"g":x.fix>=x.band[0]?"y":"r";const t=x.fix>=x.band[1]?"상단":x.fix>x.band[0]?"범위 안":x.fix===x.band[0]?"하단":"하단 미만";r.push([c,`공모가 위치 <b>${t}</b>`])}
+  if(x.lock!=null){const c=x.lock>=10?"g":x.lock>=1?"y":"r";r.push([c,`의무보유확약 <span class="num">${x.lock}%</span>`])}
+  if(x.retail!=null)r.push(["n",`일반 청약 경쟁률 <span class="num">${x.retail} : 1</span>`]);
+  return `<div class="sig">${r.map(([c,t])=>`<div class="sig-row"><span class="dot ${c}"></span>${t}</div>`).join("")}</div>`;
+}
+function matches(x){return !broker||x.b.includes(broker)}
+
+function renderNow(){
+  const sub=IPOS.filter(x=>x.s&&TODAY>=D(x.s)&&TODAY<=D(x.e));
+  const wk=new Date(TODAY);wk.setDate(wk.getDate()+7);
+  const next=IPOS.filter(x=>x.s&&D(x.s)>TODAY&&D(x.s)<=wk);
+  const lst=IPOS.filter(x=>x.l&&D(x.l)>=TODAY&&D(x.l)<=wk);
+  const chips=(arr,cls,f)=>arr.length?arr.map(x=>`<button class="chip ${cls}" data-n="${x.n}">${x.n} ${f(x)}</button>`).join(""):`<span class="muted">없어요</span>`;
+  document.getElementById("now").innerHTML=`
+   <div class="now-box"><b>오늘 청약 중</b><div class="now-list">${chips(sub,"stamp-c",x=>`· ~${md(x.e)}`)}</div></div>
+   <div class="now-box"><b>7일 안에 청약 시작</b><div class="now-list">${chips(next,"sub",x=>`· ${md(x.s)}`)}</div></div>
+   <div class="now-box"><b>7일 안에 상장</b><div class="now-list">${chips(lst,"lst",x=>`· ${md(x.l)}`)}</div></div>`;
+}
+function renderBrokers(){
+  const all=[...new Set(IPOS.flatMap(x=>x.b))].sort((a,b)=>IPOS.filter(x=>x.b.includes(b)).length-IPOS.filter(x=>x.b.includes(a)).length);
+  document.getElementById("brokers").innerHTML=`<button class="fbtn" data-br="" aria-pressed="${!broker}">전체</button>`+
+   all.map(b=>`<button class="fbtn" data-br="${b}" aria-pressed="${broker===b}">${b} <span class="num">${IPOS.filter(x=>x.b.includes(b)).length}</span></button>`).join("");
+}
+function renderTabs(){
+  document.getElementById("tabs").innerHTML=months.map(([y,m],i)=>`<button class="fbtn" data-m="${i}" aria-pressed="${i===mIdx}">${m+1}월</button>`).join("");
+}
+function renderCal(){
+  const [y,m]=months[mIdx];const first=new Date(y,m,1);const start=new Date(first);start.setDate(1-first.getDay());
+  let h=["일","월","화","수","목","금","토"].map((d,i)=>`<div class="dow${i===0?" sun":""}">${d}</div>`).join("");
+  const last=new Date(y,m+1,0);const end=new Date(last);end.setDate(last.getDate()+(6-last.getDay()));
+  for(let d=new Date(start);d<=end;d.setDate(d.getDate()+1)){
+    const out=d.getMonth()!==m, wkend=d.getDay()===0||d.getDay()===6, isT=+d===+TODAY;
+    let evs="";
+    if(!wkend){IPOS.forEach(x=>{if(x.s&&d>=D(x.s)&&d<=D(x.e)){const mine=store.mine[x.n];evs+=`<button class="ev s${mine?" mine":""}${matches(x)?"":" dim"}" data-n="${x.n}" title="${x.n} 청약">${x.n}</button>`}})}
+    IPOS.forEach(x=>{if(x.l&&+D(x.l)===+d)evs+=`<button class="ev l${matches(x)?"":" dim"}" data-n="${x.n}" title="${x.n} 상장">${x.n} 상장</button>`});
+    h+=`<div class="day${out?" out":""}${isT?" today":""}"><span class="dnum">${d.getDate()}${isT?" 오늘":""}</span>${evs}</div>`;
+  }
+  document.getElementById("cal").innerHTML=h;
+}
+function cardHTML(x,full){
+  const [st,cls]=status(x);const mine=!!store.mine[x.n];
+  return `<div class="card-top"><div style="display:flex;flex-direction:column;gap:4px;min-width:0"><h3>${x.n}</h3><span class="mk" style="align-self:flex-start">${x.mk}${x.spac?" · 스팩":""}</span></div><span class="status ${cls}">${st}</span></div>
+   <p class="desc">${x.d}</p>
+   <dl>
+    <dt>청약일</dt><dd>${x.s?`<span class="num">${md(x.s)} ~ ${md(x.e)}</span>`:`<span class="muted">확인 중</span>`}</dd>
+    <dt>상장일</dt><dd>${x.l?`<span class="num">${md(x.l)}</span>`:`<span class="muted">미정</span>`}</dd>
+    <dt>주관사</dt><dd class="broker">${x.b.length?x.b.join(", "):"<span class=\"muted\">확인 중</span>"}</dd>
+    <dt>공모가</dt><dd>${priceText(x)}</dd>
+    <dt>최소 증거금</dt><dd><span class="num">${minDeposit(x)}${minDeposit(x)==="-"?"":"원"}</span> <span class="muted">(10주 기준)</span></dd>
+   </dl>
+   ${signals(x)}
+   ${x.memo?`<p class="note">${x.memo}</p>`:""}
+   ${x.dart?`<a class="note" href="https://dart.fss.or.kr/dsaf001/main.do?rcpNo=${x.dart}" target="_blank" rel="noopener">DART 증권신고서 보기</a>`:""}
+   <button class="mine-btn" data-mine="${x.n}" aria-pressed="${mine}">${mine?"찜함 ✓":"청약할래요"}</button>`;
+}
+function renderViewFilter(){
+  const v=[["upcoming","앞으로 청약"],["mine","찜한 종목"],["all","전체"]];
+  document.getElementById("viewFilter").innerHTML=v.map(([k,t])=>`<button class="fbtn" data-view="${k}" aria-pressed="${view===k}">${t}</button>`).join("");
+}
+function renderCards(){
+  let list=IPOS.filter(matches);
+  if(view==="upcoming")list=list.filter(x=>!x.e||D(x.e)>=TODAY);
+  if(view==="mine")list=list.filter(x=>store.mine[x.n]);
+  const el=document.getElementById("cards");
+  el.innerHTML=list.length?list.map(x=>`<article class="card" id="c-${x.n}">${cardHTML(x)}</article>`).join(""):
+   `<div class="empty">${view==="mine"?"아직 찜한 종목이 없어요. 카드의 '청약할래요'를 눌러 보세요.":"조건에 맞는 종목이 없어요."}</div>`;
+}
+function renderSteps(){
+  document.getElementById("steps").innerHTML=STEPS.map(([t,s],i)=>`<div class="step"><input type="checkbox" id="st${i}" ${store.steps[i]?"checked":""}><label for="st${i}"><strong>${i+1}. ${t}</strong><span>${s}</span></label></div>`).join("");
+}
+function renderRecent(){
+  document.getElementById("recent").innerHTML=RECENT.map(([n,d,p,o])=>{const r=((o-p)/p*100);return `<tr><td>${n}</td><td class="num">${d}</td><td class="r num">${won(p)}</td><td class="r num">${won(o)}</td><td class="r num ${r>=0?"up":"down"}">${r>=0?"+":""}${r.toFixed(1)}%</td></tr>`}).join("");
+}
+function openSheet(n){
+  const x=IPOS.find(i=>i.n===n);if(!x)return;
+  document.getElementById("sheet").innerHTML=`<button class="x" id="closeSheet">닫기</button>`+cardHTML(x);
+  document.getElementById("sheetBg").hidden=false;document.getElementById("closeSheet").focus();
+}
+function all(){renderNow();renderBrokers();renderTabs();renderCal();renderViewFilter();renderCards()}
+
+document.addEventListener("click",e=>{
+  const t=e.target.closest("button");
+  if(e.target.id==="sheetBg"){document.getElementById("sheetBg").hidden=true;return}
+  if(!t)return;
+  if(t.id==="closeSheet"){document.getElementById("sheetBg").hidden=true;return}
+  if(t.dataset.br!==undefined){broker=t.dataset.br||null;all();return}
+  if(t.dataset.m!==undefined){mIdx=+t.dataset.m;renderTabs();renderCal();return}
+  if(t.dataset.view){view=t.dataset.view;renderViewFilter();renderCards();return}
+  if(t.dataset.mine){const n=t.dataset.mine;store.mine[n]=!store.mine[n];if(!store.mine[n])delete store.mine[n];save();
+    renderCal();renderCards();const open=!document.getElementById("sheetBg").hidden;if(open)openSheet(n);return}
+  if(t.dataset.n){openSheet(t.dataset.n)}
+});
+document.addEventListener("keydown",e=>{if(e.key==="Escape")document.getElementById("sheetBg").hidden=true});
+document.addEventListener("change",e=>{if(e.target.id&&e.target.id.startsWith("st")){store.steps[e.target.id.slice(2)]=e.target.checked;save()}});
+renderSteps();renderRecent();
+function renderMeta(d){
+  const t=d.updated?d.updated.replace("T"," ").slice(0,16):"-";
+  document.getElementById("asof").innerHTML=`마지막 갱신 <span class="num">${t}</span> · ${d.updated_by||""} · 일정은 증권신고서 정정으로 바뀔 수 있어요. 청약 전날엔 증권사 앱에서 꼭 다시 확인!`;
+  const n=(d.notices||[]).slice(0,5);const el=document.getElementById("notices");
+  if(n.length){el.hidden=false;el.innerHTML=`<b>새 소식</b>`+n.map(x=>`<a href="https://dart.fss.or.kr/dsaf001/main.do?rcpNo=${x.rcept_no}" target="_blank" rel="noopener">${x.date} · ${x.text}</a>`).join("")}
+}
+fetch("data.json?t="+Date.now()).then(r=>r.json()).then(d=>{IPOS=d.ipos||[];renderMeta(d);all()})
+ .catch(()=>{document.getElementById("asof").textContent="일정 파일(data.json)을 못 불러왔어요. 잠시 뒤 새로고침해 보세요."});
+</script>
+
+</body>
+</html>
