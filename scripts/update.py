@@ -117,6 +117,8 @@ def main():
     data = json.load(open(DATA, encoding="utf-8"))
     ipos = data["ipos"]
     by_name = {norm(x["n"]): x for x in ipos}
+    # 화면 이름을 바꿔도 DART 이름으로 계속 찾도록
+    by_name.update({norm(x["dart_name"]): x for x in ipos if x.get("dart_name")})
     notices = data.get("notices", [])
     seen_notice = {n["rcept_no"] for n in notices}
     changed = False
@@ -145,7 +147,8 @@ def main():
                 continue
             x = {"n": re.sub(r"\(주\)|㈜|주식회사", "", f["corp_name"]).strip(), "mk": "확인 중",
                  "d": "새로 신고된 종목이에요. 기업 설명은 곧 채워질 예정이에요.",
-                 "s": None, "e": None, "b": [], "band": [0, 0], "new": True}
+                 "s": None, "e": None, "b": [], "band": [0, 0], "new": True,
+                 "dart_name": f["corp_name"]}
             if "스팩" in f["corp_name"]:
                 x["spac"] = True
             ipos.append(x)
