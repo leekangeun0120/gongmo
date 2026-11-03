@@ -28,6 +28,12 @@ def get(path, **params):
 
 def norm(name):
     name = re.sub(r"\(주\)|㈜|주식회사|\s", "", name or "")
+    # 스팩은 이름이 제각각이라 '증권사 앞 두 글자 + 스팩 + 번호'로 맞춘다
+    # 예) 신영해피투모로우제12호기업인수목적 / 신영스팩12호 → 신영스팩12
+    if "기업인수목적" in name or "스팩" in name:
+        num = re.findall(r"(\d+)", name)
+        if num:
+            return f"{name[:2]}스팩{num[0]}".lower()
     return name.lower()
 
 
@@ -45,7 +51,8 @@ def recent_filings(days=45):
         if res.get("status") != "000":
             raise RuntimeError(f"DART 오류 {res.get('status')}: {res.get('message')}")
         for f in res.get("list", []):
-            if "증권신고서(지분증권)" in f.get("report_nm", ""):
+            # 아직 상장 안 된 회사(E=기타, N=코넥스)만. 상장사의 유상증자는 제외
+            if "증권신고서(지분증권)" in f.get("report_nm", "") and f.get("corp_cls") in ("E", "N"):
                 out.append(f)
         if page >= int(res.get("total_page", 1)):
             break
@@ -96,7 +103,7 @@ def detail(corp_code, rcept_dt):
     brokers = []
     for b in find_values(res, "actnmn"):
         b = re.sub(r"\(주\)|㈜|주식회사|\s", "", b)
-        if b and b not in brokers:
+        if b and re.search(r"[가-힣A-Za-z]", b) and b not in brokers:
             brokers.append(b)
     if brokers:
         info["b"] = brokers
@@ -132,7 +139,11 @@ def main():
         info = detail(f["corp_code"], rdt)
         date_txt = f"{rdt[4:6]}/{rdt[6:]}"
         if x is None:
-            x = {"n": re.sub(r"\(주\)|㈜|주식회사", "", f["corp_name"]).strip(), "mk": "코스닥" if f.get("corp_cls") == "K" else ("코스피" if f.get("corp_cls") == "Y" else "확인 중"),
+            today = datetime.now(KST).strftime("%Y-%m-%d")
+            if not info.get("e") or info["e"] < today:
+                print("  청약일이 없거나 이미 지난 종목이라 건너뜀")
+                continue
+            x = {"n": re.sub(r"\(주\)|㈜|주식회사", "", f["corp_name"]).strip(), "mk": "확인 중",
                  "d": "새로 신고된 종목이에요. 기업 설명은 곧 채워질 예정이에요.",
                  "s": None, "e": None, "b": [], "band": [0, 0], "new": True}
             if "스팩" in f["corp_name"]:
