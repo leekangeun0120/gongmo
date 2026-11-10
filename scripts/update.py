@@ -157,7 +157,7 @@ def main():
         else:
             text = f"{f['corp_name']} 증권신고서 {'정정' if is_fix else '제출'} · 일정·가격 다시 확인"
             if is_fix:
-                x["memo"] = f"{date_txt} 증권신고서 정정. 일정이나 가격이 바뀌었을 수 있어요."
+                x["alert"] = f"{date_txt} 증권신고서 정정. 일정이나 가격이 바뀌었을 수 있어요."
         if info.get("s") and info["s"] != x.get("s"):
             x["s"], x["e"] = info["s"], info["e"]
         if info.get("b") and not x.get("b"):
