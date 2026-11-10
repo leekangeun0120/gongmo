@@ -7,295 +7,270 @@
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&family=IBM+Plex+Sans+KR:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@800&family=Noto+Sans+KR:wght@400;500;700;800&display=swap">
 <style>
-/* 레이아웃: 이번 주 할 일 → 내 계좌 → 월 달력(막대) → 통과/대기/탈락 목록 → 기준·용어. 청약서 도장(주홍)과 증권 잉크(청록) */
+/* 레이아웃: 큰 월 표시 + 막대 달력 → 월별 청약 공모주 카드(통과·대기 / 탈락 접기) → 내 도구(할 일·계좌·기록) → 기준 시각 */
 :root{
-  --bg:#f7f8f6; --paper:#ffffff; --sunk:#f1f3f0; --ink:#15302c; --muted:#5b6d69; --line:#dfe5e2; --rule:#15302c;
-  --teal:#1f6f63; --teal-soft:#e3f0ec; --stamp:#d2492a; --stamp-soft:#fbe7e1;
-  --good:#2f7d3c; --good-soft:#e7f4e8; --warn:#9a5d00; --warn-soft:#fbf1dd; --bad:#b3312a; --bad-soft:#f9e5e3;
-  --list:#2f55b5; --list-soft:#e6ecfa; --grey:#6d7774; --grey-soft:#eceeec;
-  --f-display:"Gowun Batang","Noto Serif KR",serif;
-  --f-body:"IBM Plex Sans KR","Apple SD Gothic Neo","Malgun Gothic",sans-serif;
-  --f-num:"IBM Plex Mono",ui-monospace,monospace;
+  --bg:#f5f3ee; --card:#ffffff; --cell:#fffefb; --head:#f7f6f2; --ink:#1d1d1b; --muted:#8b8a85; --soft:#5f5e59; --line:#e5e2db; --rule:#1d1d1b;
+  --green:#3a9a5a; --green-soft:#e8f4ec; --green-ink:#2a7a45;
+  --sub:#e4844a; --sub-soft:#fdeee3; --sub-ink:#b6561e;
+  --blue:#3f74d8; --blue-soft:#e9f0fc; --blue-ink:#2e5fbf;
+  --amber:#c88a12; --amber-soft:#fdf3dc; --amber-ink:#9a6a06;
+  --red:#d24a3f; --red-soft:#fbeae8; --red-ink:#c03a30;
+  --grey:#d5d3cd; --grey-soft:#efeeea; --grey-ink:#55544f;
+  --f-num:"M PLUS Rounded 1c","Noto Sans KR",sans-serif;
+  --f-body:"Noto Sans KR","Apple SD Gothic Neo","Malgun Gothic",sans-serif;
 }
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
-  --bg:#0f1715; --paper:#16211e; --sunk:#121b19; --ink:#e4ece9; --muted:#9bb0aa; --line:#2a3a36; --rule:#9bb0aa;
-  --teal:#5cc0ad; --teal-soft:#1c3530; --stamp:#f07a5c; --stamp-soft:#3a201a;
-  --good:#7fcf8a; --good-soft:#1a3020; --warn:#e8b25a; --warn-soft:#382a12; --bad:#f08a80; --bad-soft:#3b1d1b;
-  --list:#8fa8f0; --list-soft:#1d2645; --grey:#a3aeab; --grey-soft:#232e2b; color-scheme:dark}}
+  --bg:#151513; --card:#1f1f1c; --cell:#1b1b19; --head:#232320; --ink:#ecebe6; --muted:#9a9993; --soft:#b9b8b2; --line:#33322e; --rule:#ecebe6;
+  --green:#5cc07c; --green-soft:#1d3324; --green-ink:#7fd39a;
+  --sub:#f09a62; --sub-soft:#3a2518; --sub-ink:#f5ae7f;
+  --blue:#7ea3f0; --blue-soft:#1c2740; --blue-ink:#9bb8f4;
+  --amber:#e6b04a; --amber-soft:#36290f; --amber-ink:#efc46f;
+  --red:#f07b70; --red-soft:#3b1e1b; --red-ink:#f59a90;
+  --grey:#4a4944; --grey-soft:#2a2a27; --grey-ink:#c9c8c2; color-scheme:dark}}
 :root[data-theme="dark"]{
-  --bg:#0f1715; --paper:#16211e; --sunk:#121b19; --ink:#e4ece9; --muted:#9bb0aa; --line:#2a3a36; --rule:#9bb0aa;
-  --teal:#5cc0ad; --teal-soft:#1c3530; --stamp:#f07a5c; --stamp-soft:#3a201a;
-  --good:#7fcf8a; --good-soft:#1a3020; --warn:#e8b25a; --warn-soft:#382a12; --bad:#f08a80; --bad-soft:#3b1d1b;
-  --list:#8fa8f0; --list-soft:#1d2645; --grey:#a3aeab; --grey-soft:#232e2b; color-scheme:dark}
+  --bg:#151513; --card:#1f1f1c; --cell:#1b1b19; --head:#232320; --ink:#ecebe6; --muted:#9a9993; --soft:#b9b8b2; --line:#33322e; --rule:#ecebe6;
+  --green:#5cc07c; --green-soft:#1d3324; --green-ink:#7fd39a;
+  --sub:#f09a62; --sub-soft:#3a2518; --sub-ink:#f5ae7f;
+  --blue:#7ea3f0; --blue-soft:#1c2740; --blue-ink:#9bb8f4;
+  --amber:#e6b04a; --amber-soft:#36290f; --amber-ink:#efc46f;
+  --red:#f07b70; --red-soft:#3b1e1b; --red-ink:#f59a90;
+  --grey:#4a4944; --grey-soft:#2a2a27; --grey-ink:#c9c8c2; color-scheme:dark}
 [hidden]{display:none!important}
 *{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:15px;line-height:1.6;
-  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:20px 60px}
-.wrap{max-width:960px;margin:0 auto;display:flex;flex-direction:column;gap:32px}
-h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0;line-height:1.3}
-h1{font-size:clamp(28px,5vw,38px)}
-h2{font-size:22px}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:15px;line-height:1.55;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:20px 56px}
+.wrap{max-width:900px;margin:0 auto;display:flex;flex-direction:column;gap:28px}
+button,input{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
+a{color:inherit}
 p{margin:0}
-.num{font-family:var(--f-num);font-variant-numeric:tabular-nums}
-.muted{color:var(--muted)}
-.eyebrow{font-size:12px;letter-spacing:.08em;color:var(--muted);font-weight:600}
-button{font:inherit;color:inherit;cursor:pointer}
-input{font:inherit;color:inherit}
-:focus-visible{outline:2px solid var(--teal);outline-offset:2px}
-a{color:var(--teal)}
-section{display:flex;flex-direction:column;gap:12px}
-.sec-head{display:flex;justify-content:space-between;align-items:baseline;gap:8px 16px;flex-wrap:wrap}
+.tnum{font-variant-numeric:tabular-nums}
 
-/* 헤더 */
-header{display:flex;flex-direction:column;gap:10px}
-.head-row{display:flex;justify-content:space-between;gap:16px;align-items:flex-end;flex-wrap:wrap}
-.stamp{border:2px solid var(--stamp);color:var(--stamp);font-family:var(--f-display);font-weight:700;padding:4px 10px;border-radius:6px;transform:rotate(-4deg);font-size:14px;white-space:nowrap}
-.asof{font-size:13px;color:var(--muted)}
-.notices{display:flex;flex-direction:column;gap:4px;background:var(--stamp-soft);border-radius:10px;padding:12px 14px}
-.notices b{color:var(--stamp);font-size:13px}
-.notices a{font-size:13.5px}
-
-/* 이번 주 할 일 */
-.todo{background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:6px 16px}
-.todo-row{display:grid;grid-template-columns:76px minmax(0,1fr);gap:12px;padding:10px 0;border-top:1px solid var(--line);align-items:start}
-.todo-row:first-child{border-top:0}
-.when{font-family:var(--f-num);font-size:13px;font-weight:600;color:var(--muted);padding-top:1px}
-.when.today{color:var(--stamp)}
-.todo-text{display:flex;flex-direction:column;gap:2px;min-width:0}
-.todo-text b{font-weight:600}
-.todo-text span{font-size:13px;color:var(--muted)}
-.todo-link{border:0;background:none;padding:0;text-align:left;font-weight:600;text-decoration:underline;text-decoration-color:var(--line);text-underline-offset:3px}
-.money{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:13.5px;background:var(--teal-soft);color:var(--ink);border-radius:10px;padding:10px 14px}
-.money b{color:var(--teal)}
-
-/* 칩 */
-.chips{display:flex;flex-wrap:wrap;gap:6px}
-.chip{border:1px solid var(--line);background:var(--paper);border-radius:999px;padding:5px 12px;font-size:13px}
-.chip[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
-.tag{display:inline-flex;align-items:center;font-size:12px;font-weight:600;border-radius:5px;padding:1px 7px;white-space:nowrap}
-.tag.sub{background:var(--stamp-soft);color:var(--stamp)}
-.tag.lst{background:var(--list-soft);color:var(--list)}
-.tag.mk{border:1px solid var(--line);color:var(--muted);font-weight:500}
-.tag.kospi{border:1px solid var(--list);color:var(--list);font-weight:500}
-
-/* 달력 */
-.cal-top{display:flex;align-items:flex-end;gap:16px;flex-wrap:wrap;border-bottom:3px solid var(--rule);padding-bottom:12px}
-.mnum{font-family:var(--f-display);font-weight:700;font-size:76px;line-height:.85;color:var(--teal)}
-.mname{display:flex;flex-direction:column;gap:6px}
-.mname b{letter-spacing:.3em;font-size:15px}
-.mname span{font-size:14px;color:var(--muted)}
-.nav{display:flex;gap:6px}
-.nav button{border:1px solid var(--line);background:var(--paper);border-radius:8px;min-width:40px;height:36px;padding:0 12px}
-.legend{display:flex;gap:6px 14px;flex-wrap:wrap;font-size:12.5px;color:var(--muted)}
-.legend i{display:inline-block;width:11px;height:11px;border-radius:3px;margin-right:5px;vertical-align:-1px;border:1px solid}
-.cal-scroll{overflow-x:auto;border:1px solid var(--line);border-radius:10px;background:var(--paper)}
-.cal{min-width:600px}
-.dows{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));background:var(--sunk);border-bottom:1px solid var(--line)}
-.dows div{font-size:12.5px;text-align:center;padding:6px 0;color:var(--muted);font-weight:600}
-.dows div:first-child{color:var(--bad)} .dows div:last-child{color:var(--list)}
-.week{position:relative;display:grid;grid-template-columns:repeat(7,minmax(0,1fr));grid-auto-rows:min-content;row-gap:4px;min-height:92px;padding-bottom:8px;border-bottom:1px solid var(--line)}
+/* ── 달력 머리 ── */
+.calbox{background:var(--cell);border-radius:6px;padding:18px 20px 22px;box-shadow:0 1px 0 var(--line)}
+.top{display:flex;align-items:flex-end;gap:22px;flex-wrap:wrap;padding-bottom:14px;border-bottom:3px solid var(--rule);position:relative}
+.mnum{font-family:var(--f-num);font-weight:800;font-size:86px;line-height:.82;color:var(--green);letter-spacing:-.02em}
+.mside{display:flex;flex-direction:column;gap:6px}
+.men{font-weight:800;letter-spacing:.32em;font-size:16px}
+.mko{color:var(--soft);font-size:14px}
+.nav{display:flex;gap:6px;margin-top:6px}
+.nav button{background:var(--card);border:1px solid var(--line);border-radius:10px;height:38px;min-width:40px;padding:0 14px;font-size:15px}
+.sign{margin-left:auto;align-self:center;display:flex;flex-direction:column;align-items:center;transform:rotate(-6deg)}
+.sign b{background:var(--sub-soft);border:2.5px solid var(--ink);border-radius:8px;padding:6px 12px;font-weight:800;font-size:16px;line-height:1.2;text-align:center;color:var(--sub-ink)}
+.sign i{width:5px;height:34px;background:var(--sub);border:2px solid var(--ink);border-top:0;border-radius:0 0 3px 3px}
+.legend{display:flex;gap:16px;flex-wrap:wrap;font-size:13px;color:var(--soft);padding:12px 0 10px}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.legend i{width:12px;height:12px;border-radius:3px;border:1.5px solid}
+.cal-scroll{overflow-x:auto}
+.cal{min-width:620px;border:1px solid var(--line);background:var(--cell)}
+.dows{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));background:var(--head)}
+.dows div{text-align:center;font-size:13px;padding:7px 0;color:var(--soft);border-right:1px solid var(--line);border-bottom:1px solid var(--line)}
+.dows div:last-child{border-right:0}
+.dows .sun{color:var(--red)} .dows .sat{color:var(--blue)}
+.week{position:relative;display:grid;grid-template-columns:repeat(7,minmax(0,1fr));grid-auto-rows:min-content;row-gap:4px;min-height:100px;padding-bottom:10px;border-bottom:1px solid var(--line)}
 .week:last-child{border-bottom:0}
 .wbg{position:absolute;inset:0;display:grid;grid-template-columns:repeat(7,minmax(0,1fr));pointer-events:none}
 .wbg div{border-right:1px solid var(--line)}
 .wbg div:last-child{border-right:0}
-.wbg div.out{background:var(--sunk)}
-.wbg div.today{box-shadow:inset 0 0 0 2px var(--stamp)}
-.dn{position:relative;padding:6px 8px 2px;font-family:var(--f-num);font-size:13px;font-weight:600;grid-row:1}
-.dn.sun{color:var(--bad)} .dn.sat{color:var(--list)} .dn.out{opacity:.4}
-.dn.today span{background:var(--ink);color:var(--bg);border-radius:999px;padding:1px 8px}
-.bar{position:relative;margin:0 3px;border:1px solid;border-radius:6px;padding:2px 7px;font-size:12px;line-height:1.4;text-align:left;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
-.bar b{margin-right:4px}
-.bar.pass{background:var(--good-soft);border-color:var(--good);color:var(--ink)} .bar.pass b{color:var(--good)}
-.bar.wait{background:var(--grey-soft);border-color:var(--line);color:var(--ink)} .bar.wait b{color:var(--grey)}
-.bar.fail{background:var(--paper);border-color:var(--bad-soft);color:var(--muted)} .bar.fail b{color:var(--bad)}
-.bar.lst{background:var(--list-soft);border-color:var(--list);color:var(--ink)} .bar.lst b{color:var(--list)}
-.bar.mine{box-shadow:inset 3px 0 0 var(--stamp)}
+.wbg .out{background:var(--head)}
+.dn{position:relative;grid-row:1;padding:7px 8px 3px;font-weight:700;font-size:15px}
+.dn.sun{color:var(--red)} .dn.sat{color:var(--blue)} .dn.out{color:var(--muted);opacity:.55;font-weight:500}
+.dn.today span{background:var(--ink);color:var(--card);border-radius:999px;padding:1px 9px}
+.bar{position:relative;margin:0 4px;border:1.5px solid;border-radius:6px;padding:2px 7px;font-size:13px;line-height:1.45;text-align:left;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0;color:var(--soft)}
+.bar b{margin-right:4px;font-weight:800}
+.bar.s{background:var(--sub-soft);border-color:var(--sub)} .bar.s b{color:var(--sub-ink)}
+.bar.l{background:var(--blue-soft);border-color:var(--blue)} .bar.l b{color:var(--blue-ink)}
+.bar.w{background:var(--grey-soft);border-color:var(--grey)} .bar.w b{color:var(--grey-ink)}
+.bar.mine{box-shadow:inset 4px 0 0 var(--red)}
 
-/* 목록 */
-.count{font-size:13px;color:var(--muted)}
-.crit{background:var(--paper);border:1px solid var(--line);border-radius:12px}
-.crit>summary{list-style:none;cursor:pointer;padding:12px 16px;font-weight:600;display:flex;justify-content:space-between;gap:8px}
-.crit>summary::-webkit-details-marker{display:none}
-.crit>summary::after{content:"펼치기";font-size:12.5px;color:var(--muted);font-weight:500}
-.crit[open]>summary::after{content:"접기"}
-.crit-body{padding:0 16px 16px;display:flex;flex-direction:column;gap:12px;font-size:14px}
-.crit-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px}
-.crit-item{background:var(--sunk);border-radius:8px;padding:10px 12px;display:flex;flex-direction:column;gap:2px}
-.crit-item b{font-size:14px}
-.crit-item span{font-size:13px;color:var(--muted)}
-.group-title{font-size:13px;font-weight:700;color:var(--muted);letter-spacing:.04em;margin-top:6px}
-.cards{display:flex;flex-direction:column;gap:10px}
-.card{background:var(--paper);border:1px solid var(--line);border-radius:14px;scroll-margin-top:16px}
-.card.flash{box-shadow:0 0 0 3px var(--stamp)}
-.card>summary{list-style:none;cursor:pointer;padding:14px 16px;display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px 16px;align-items:center}
-.card>summary::-webkit-details-marker{display:none}
-.c-left{display:flex;flex-direction:column;gap:6px;min-width:0}
-.c-name{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
-.c-name h3{font-family:var(--f-body);font-size:17px;font-weight:700}
-.brk{font-size:13px;color:var(--muted)}
-.brk .have{color:var(--good);font-weight:600}
-.c-dates{display:flex;flex-wrap:wrap;gap:4px 12px;font-size:13px;align-items:center}
-.c-dates span{display:inline-flex;gap:6px;align-items:center}
-.c-right{display:flex;align-items:center;gap:12px;justify-content:flex-end}
-.c-stat{display:flex;flex-direction:column;align-items:flex-end;text-align:right}
-.c-stat small{font-size:11.5px;color:var(--muted)}
-.c-stat strong{font-size:18px;font-weight:700;font-variant-numeric:tabular-nums}
-.c-stat strong.blue{color:var(--list)} .c-stat strong.red{color:var(--stamp)}
-.badge{font-size:12.5px;font-weight:700;border-radius:999px;padding:3px 11px;white-space:nowrap}
-.badge.pass{background:var(--good-soft);color:var(--good)}
-.badge.wait,.badge.check{background:var(--warn-soft);color:var(--warn)}
-.badge.fail{background:var(--bad-soft);color:var(--bad)}
-.badge.spac{background:var(--grey-soft);color:var(--grey)}
-.chev{color:var(--muted);transition:transform .2s}
-.card[open] .chev{transform:rotate(180deg)}
-@media (max-width:560px){.card>summary{grid-template-columns:1fr}.c-right{justify-content:space-between}.c-stat{align-items:flex-start;text-align:left}}
-.c-body{border-top:1px solid var(--line);padding:14px 16px 16px;display:flex;flex-direction:column;gap:14px;background:var(--sunk);border-radius:0 0 14px 14px}
-.verdict{border-radius:10px;padding:12px 14px;font-size:14.5px}
-.verdict.pass{background:var(--good-soft)}
-.verdict.wait,.verdict.check{background:var(--warn-soft)}
-.verdict.fail{background:var(--bad-soft)}
-.verdict.spac{background:var(--grey-soft)}
-.verdict b{display:block;color:var(--bad);margin-bottom:2px}
-.verdict ol{margin:0;padding-left:20px}
+/* ── 목록 ── */
+.lhead{display:flex;justify-content:space-between;align-items:baseline;gap:8px 16px;flex-wrap:wrap}
+.lhead h2{margin:0;font-size:24px;font-weight:800}
+.lhead span{font-size:14px;color:var(--muted)}
+.list{display:flex;flex-direction:column;gap:14px}
+.box{background:var(--card);border:1px solid var(--line);border-radius:16px}
+.box>summary{list-style:none;cursor:pointer}
+.box>summary::-webkit-details-marker{display:none}
+.chev{width:22px;height:22px;display:grid;place-items:center;color:var(--muted);transition:transform .2s;flex:none}
+details[open]>summary .chev{transform:rotate(180deg)}
+.crit>summary{display:flex;justify-content:space-between;align-items:center;padding:16px 20px;font-weight:700;font-size:16px}
+.crit-body{padding:0 20px 18px;display:flex;flex-direction:column;gap:10px;font-size:14.5px;color:var(--soft)}
+.crit-body ul{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:4px}
+.crit-body b{color:var(--ink)}
+.card{scroll-margin-top:16px}
+.card.flash{box-shadow:0 0 0 3px var(--sub)}
+.card>summary{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px 18px;align-items:center;padding:18px 20px}
+.cl{display:flex;flex-direction:column;gap:8px;min-width:0}
+.cname{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.cname h3{margin:0;font-size:19px;font-weight:800}
+.mk{font-size:12.5px;border:1px solid var(--line);border-radius:5px;padding:0 7px;color:var(--soft)}
+.mk.kospi{border-color:var(--blue);color:var(--blue-ink)}
+.brk{font-size:14px;color:var(--soft)}
+.brk .have{color:var(--green-ink);font-weight:700}
+.cdates{display:flex;flex-wrap:wrap;gap:4px 14px;font-size:14px;color:var(--soft);align-items:center}
+.cdates>span{display:inline-flex;align-items:center;gap:6px}
+.pill{font-size:12.5px;font-weight:700;border-radius:4px;padding:0 6px}
+.pill.s{background:var(--sub-soft);color:var(--sub-ink)}
+.pill.l{background:var(--blue-soft);color:var(--blue-ink)}
+.pill.me{background:var(--red);color:var(--card)}
+.cr{display:flex;align-items:center;gap:14px;justify-content:flex-end}
+.stat{display:flex;flex-direction:column;align-items:flex-end;text-align:right}
+.stat small{font-size:12.5px;color:var(--muted)}
+.stat strong{font-size:22px;font-weight:800;font-variant-numeric:tabular-nums;line-height:1.25}
+.stat strong.blue{color:var(--blue-ink)}
+.badge{font-size:13.5px;font-weight:700;border-radius:999px;padding:4px 13px;white-space:nowrap}
+.badge.g{background:var(--green-soft);color:var(--green-ink)}
+.badge.a{background:var(--amber-soft);color:var(--amber-ink)}
+.badge.r{background:var(--red-soft);color:var(--red-ink)}
+.badge.n{background:var(--grey-soft);color:var(--grey-ink)}
+@media (max-width:600px){.card>summary{grid-template-columns:1fr}.cr{justify-content:space-between}.stat{align-items:flex-start;text-align:left}}
+.cbody{border-top:1px solid var(--line);padding:16px 20px 18px;display:flex;flex-direction:column;gap:14px;background:var(--cell);border-radius:0 0 16px 16px}
+.vbox{border-radius:12px;padding:14px 16px;font-size:15px;line-height:1.6}
+.vbox.g{background:var(--green-soft)} .vbox.a{background:var(--amber-soft)} .vbox.r{background:var(--red-soft)} .vbox.n{background:var(--grey-soft)}
+.vbox.r b{display:block;color:var(--red-ink);margin-bottom:4px}
+.vbox ol{margin:0;padding-left:0;list-style:none;color:var(--red-ink)}
+.live{border:1.5px solid var(--sub-soft);background:var(--card);border-radius:12px;overflow:hidden}
+.live-h{display:flex;justify-content:space-between;align-items:center;padding:10px 14px;background:var(--sub-soft);color:var(--sub-ink);font-weight:800;font-size:14.5px}
+.live-b{padding:10px 14px 12px;display:flex;flex-direction:column;gap:3px;font-size:14px}
+.live-b b{font-size:15px}
+.live-b .links{display:flex;gap:14px;flex-wrap:wrap}
+.live-b .links a{color:var(--sub-ink);font-weight:700;text-underline-offset:3px}
+.live-b small{color:var(--muted);font-size:12.5px;border-top:1px dashed var(--line);padding-top:6px;margin-top:4px}
 .rows{display:flex;flex-direction:column}
-.rows .rh{font-size:12px;font-weight:700;color:var(--muted);padding:6px 0 4px}
-.rows .rh em{font-style:normal;color:var(--good);margin-left:6px}
-.row{display:grid;grid-template-columns:24px minmax(0,1fr) auto;gap:10px;align-items:center;padding:8px 0;border-bottom:1px solid var(--line)}
-.ico{width:22px;height:22px;border-radius:50%;display:grid;place-items:center;font-size:12px;font-weight:700}
-.ico.y{background:var(--good-soft);color:var(--good)} .ico.n{background:var(--bad-soft);color:var(--bad)} .ico.u{background:var(--grey-soft);color:var(--grey)}
-.row .lbl{display:flex;flex-direction:column;min-width:0}
-.row .lbl span{font-size:12.5px;color:var(--muted)}
-.row .val{font-weight:700;font-variant-numeric:tabular-nums;text-align:right}
-.row .val.n{color:var(--bad)} .row .val.u{color:var(--muted);font-weight:500}
-.about{font-size:14px}
-.facts{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px}
-.fact{background:var(--paper);border:1px solid var(--line);border-radius:8px;padding:8px 10px;display:flex;flex-direction:column}
-.fact span{font-size:12px;color:var(--muted)}
-.fact b{font-size:14px;font-variant-numeric:tabular-nums}
-.live{border:1px dashed var(--stamp);border-radius:10px;padding:10px 12px;font-size:13.5px;background:var(--paper)}
-.live b{color:var(--stamp)}
-.note{font-size:13px;color:var(--muted)}
-.alert{font-size:13px;color:var(--warn)}
-.actions{display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:space-between}
+.rh{font-size:13px;font-weight:700;color:var(--muted);padding:6px 0 2px}
+.rh em{font-style:normal;color:var(--green-ink);margin-left:6px}
+.row{display:grid;grid-template-columns:26px minmax(0,1fr) auto;gap:10px;align-items:center;padding:10px 0;border-bottom:1px solid var(--line)}
+.ico{width:24px;height:24px;border-radius:50%;display:grid;place-items:center;font-size:13px;font-weight:800}
+.ico.y{background:var(--green-soft);color:var(--green-ink)} .ico.x{background:var(--red-soft);color:var(--red-ink)} .ico.u{background:var(--grey-soft);color:var(--muted)}
+.lbl{display:flex;flex-direction:column;min-width:0}
+.lbl b{font-weight:500;font-size:15px}
+.lbl span{font-size:13px;color:var(--muted)}
+.val{font-weight:800;font-size:16px;font-variant-numeric:tabular-nums;text-align:right}
+.val.x{color:var(--red-ink)} .val.u{color:var(--muted);font-weight:500;font-size:14.5px}
+.about{font-size:14px;color:var(--soft)}
+.about b{color:var(--ink)}
+.foot-row{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
 .mark{display:flex;gap:6px;flex-wrap:wrap}
-.mbtn{border:1px solid var(--stamp);color:var(--stamp);background:var(--paper);border-radius:7px;padding:4px 10px;font-size:13px}
-.mbtn[aria-pressed="true"]{background:var(--stamp);color:var(--paper)}
-.mine-in{display:flex;flex-wrap:wrap;gap:8px;align-items:center;font-size:13px}
-.mine-in input{width:92px;border:1px solid var(--line);border-radius:6px;padding:4px 8px;background:var(--paper)}
-.fold{background:transparent;border:1px dashed var(--line);border-radius:12px}
-.fold>summary{list-style:none;cursor:pointer;padding:12px 16px;font-weight:600;color:var(--muted)}
+.mbtn{border:1px solid var(--line);background:var(--card);border-radius:8px;padding:4px 10px;font-size:13px;color:var(--soft)}
+.mbtn[aria-pressed="true"]{background:var(--ink);color:var(--card);border-color:var(--ink)}
+.orig{font-size:13.5px;color:var(--soft);text-decoration:underline;text-underline-offset:3px}
+.mine-in{display:flex;flex-wrap:wrap;gap:8px;align-items:center;font-size:13px;color:var(--soft)}
+.mine-in input{width:96px;border:1px solid var(--line);border-radius:6px;padding:4px 8px;background:var(--card)}
+.warn{font-size:13px;color:var(--amber-ink)}
+.fold{border:1.5px dashed var(--grey);border-radius:16px}
+.fold>summary{list-style:none;cursor:pointer;display:flex;justify-content:space-between;align-items:center;padding:14px 20px;font-weight:700;color:var(--soft)}
 .fold>summary::-webkit-details-marker{display:none}
-.fold>.cards{padding:0 10px 10px}
-.empty{padding:20px;text-align:center;color:var(--muted);border:1px dashed var(--line);border-radius:10px;font-size:14px}
+.fold>summary small{font-weight:500;color:var(--muted);margin-left:6px}
+.fold>.list{padding:0 12px 12px}
+.empty{padding:24px;text-align:center;color:var(--muted);border:1.5px dashed var(--grey);border-radius:16px}
 
-/* 내 기록 */
-.tbl{overflow-x:auto;background:var(--paper);border:1px solid var(--line);border-radius:10px}
-table{border-collapse:collapse;width:100%;min-width:480px;font-size:13.5px}
-th,td{padding:8px 12px;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
-th{font-size:12px;color:var(--muted);font-weight:600}
+/* ── 내 도구 ── */
+.mytools{display:flex;flex-direction:column;gap:14px}
+.mytools h2{margin:0;font-size:20px;font-weight:800}
+.todo{padding:6px 20px}
+.trow{display:grid;grid-template-columns:72px minmax(0,1fr);gap:12px;padding:11px 0;border-top:1px solid var(--line)}
+.trow:first-child{border-top:0}
+.when{font-weight:700;font-size:13.5px;color:var(--muted)}
+.when.today{color:var(--red-ink)}
+.ttext{display:flex;flex-direction:column;min-width:0}
+.ttext span{font-size:13px;color:var(--muted)}
+.tlink{border:0;background:none;padding:0;font-weight:700;text-decoration:underline;text-decoration-color:var(--line);text-underline-offset:3px}
+.money{margin:4px 0 14px;background:var(--green-soft);border-radius:10px;padding:10px 14px;font-size:14px}
+.money b{color:var(--green-ink)}
+.acc{padding:16px 20px;display:flex;flex-direction:column;gap:10px}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{border:1px solid var(--line);background:var(--card);border-radius:999px;padding:5px 12px;font-size:13px}
+.chip[aria-pressed="true"]{background:var(--ink);color:var(--card);border-color:var(--ink)}
+.note{font-size:13px;color:var(--muted)}
+.tbl{overflow-x:auto}
+table{border-collapse:collapse;width:100%;min-width:480px;font-size:14px}
+th,td{padding:9px 14px;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{font-size:12.5px;color:var(--muted);font-weight:500}
 td.r,th.r{text-align:right}
-.up{color:var(--good);font-weight:600}.down{color:var(--bad);font-weight:600}
-.terms{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:10px 24px;padding:0 16px 16px}
-.term{display:flex;flex-direction:column;gap:2px;border-bottom:1px solid var(--line);padding-bottom:8px}
-.term b{font-size:14px}
-.term span{font-size:13.5px;color:var(--muted)}
-footer{font-size:12.5px;color:var(--muted);border-top:1px solid var(--line);padding-top:14px}
+.up{color:var(--green-ink);font-weight:700}.down{color:var(--red-ink);font-weight:700}
+.notices{padding:14px 20px;display:flex;flex-direction:column;gap:4px;font-size:13.5px}
+.notices b{font-size:13px;color:var(--muted)}
+.notices a{color:var(--soft)}
+footer{border-top:1px solid var(--line);padding-top:16px;font-size:13.5px;color:var(--muted);line-height:1.7}
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
 </style>
 </head>
 <body>
 <div class="wrap">
 
-<header>
-  <div class="head-row">
-    <div style="display:flex;flex-direction:column;gap:6px">
-      <span class="eyebrow">주린이 공모주 노트</span>
-      <h1>강은의 공모주 달력</h1>
+<div class="calbox">
+  <div class="top">
+    <div class="mnum" id="mnum">11</div>
+    <div class="mside">
+      <span class="men" id="men">NOVEMBER</span>
+      <span class="mko" id="mko">2026년 11월</span>
+      <div class="nav">
+        <button id="prev" aria-label="이전 달">‹</button>
+        <button id="thism">오늘</button>
+        <button id="next" aria-label="다음 달">›</button>
+      </div>
     </div>
-    <span class="stamp">청약 주의보</span>
-  </div>
-  <p class="asof" id="asof">불러오는 중…</p>
-  <div class="notices" id="notices" hidden></div>
-</header>
-
-<section>
-  <div class="sec-head"><h2>이번 주 할 일</h2><span class="count">오늘부터 7일</span></div>
-  <div class="todo" id="todo"></div>
-  <div class="money" id="money" hidden></div>
-</section>
-
-<section>
-  <div class="sec-head"><h2>내 증권 계좌</h2><span class="count">있는 곳을 눌러 두세요</span></div>
-  <div class="chips" id="accounts"></div>
-  <p class="note">공모주는 주관 증권사 계좌로만 청약할 수 있어요. 눌러 둔 계좌는 카드에 <b style="color:var(--good)">✓</b>로 표시되고, 없는 곳은 미리 만들어 두라고 알려 드려요. 이 기기에만 저장돼요.</p>
-</section>
-
-<section>
-  <div class="cal-top">
-    <div class="mnum num" id="mnum">11</div>
-    <div class="mname"><b id="men">NOVEMBER</b><span id="mko">2026년 11월</span></div>
-    <div class="nav" style="margin-left:auto">
-      <button id="prev" aria-label="이전 달">‹</button>
-      <button id="thism">오늘</button>
-      <button id="next" aria-label="다음 달">›</button>
-    </div>
+    <div class="sign" aria-hidden="true"><b>공모주<br>청약!</b><i></i></div>
   </div>
   <div class="legend">
-    <span><i style="background:var(--good-soft);border-color:var(--good)"></i>청약 · 통과</span>
-    <span><i style="background:var(--grey-soft);border-color:var(--line)"></i>청약 · 결과 대기</span>
-    <span><i style="background:var(--paper);border-color:var(--bad-soft)"></i>청약 · 탈락</span>
-    <span><i style="background:var(--list-soft);border-color:var(--list)"></i>상장일</span>
-    <span><i style="background:var(--paper);border-color:var(--stamp);border-left-width:3px"></i>내가 찜·청약</span>
+    <span><i style="background:var(--sub-soft);border-color:var(--sub)"></i>청약일</span>
+    <span><i style="background:var(--blue-soft);border-color:var(--blue)"></i>상장일</span>
+    <span><i style="background:var(--grey-soft);border-color:var(--grey)"></i>수요예측 대기</span>
   </div>
   <div class="cal-scroll"><div class="cal" id="cal"></div></div>
-  <p class="note">막대를 누르면 아래 카드가 열려요. 휴대폰에서는 달력을 옆으로 밀어 보세요.</p>
-</section>
+</div>
 
-<section>
-  <div class="sec-head"><h2 id="listTitle">11월 청약 공모주</h2><span class="count num" id="listCount"></span></div>
-  <details class="crit">
-    <summary>공모주 청약 선별 기준</summary>
+<section class="list" aria-labelledby="listTitle">
+  <div class="lhead"><h2 id="listTitle">11월 청약 공모주</h2><span class="tnum" id="listCount"></span></div>
+  <details class="box crit">
+    <summary>공모주 청약 선별 기준<span class="chev">⌄</span></summary>
     <div class="crit-body">
-      <p>필수 두 개를 <b>모두</b> 만족하고, 선택 A·B 중 <b>하나 이상</b>을 만족하면 <b style="color:var(--good)">통과</b>예요. 통과는 "균등 최소 수량만 넣어 볼 만한 후보"라는 뜻이지, 꼭 오른다는 뜻은 아니에요.</p>
-      <div class="crit-grid">
-        <div class="crit-item"><b>필수 · 확정공모가 희망 상단 이상</b><span>기관들이 "비싸도 사겠다"고 했다는 뜻. 하단이면 인기가 없었다는 신호.</span></div>
-        <div class="crit-item"><b>필수 · 기관경쟁률 200:1 이상</b><span>기관 수요예측에 몰린 정도. 100:1 아래면 조심.</span></div>
-        <div class="crit-item"><b>선택 A · 의무보유확약 5% 이상</b><span>기관이 "상장 후 바로 안 팔게요"라고 약속한 비율. 높을수록 첫날 매물이 적어요.</span></div>
-        <div class="crit-item"><b>선택 B · 상장 직후 유통 물량 30% 이하</b><span>상장 첫날 바로 팔 수 있는 주식 비율. 적을수록 가격이 덜 눌려요.</span></div>
-      </div>
-      <p class="note">왜 기준이 필요할까? 10월 말 상장한 엘리스그룹은 공모가 90,500원 → 시초가 75,700원(-16.4%), 크리에이츠는 15,000원 → 12,000원(-20%)으로 시작했어요. 공모주도 손해 볼 수 있어요.</p>
+      <p><b>필수 두 개를 모두</b> 충족하고, <b>선택 A·B 중 하나 이상</b>을 충족하면 통과입니다.</p>
+      <ul>
+        <li><b>필수 · 확정공모가 희망 상단 이상</b> — 기관들이 비싸도 사겠다고 했다는 뜻이에요.</li>
+        <li><b>필수 · 기관경쟁률 200:1 이상</b> — 기관 수요예측에 몰린 정도예요.</li>
+        <li><b>선택 A · 의무보유확약 5% 이상</b> — 기관이 상장 후 바로 안 팔겠다고 약속한 비율이에요.</li>
+        <li><b>선택 B · 상장 직후 유통가능 물량 30% 이하</b> — 상장 첫날 바로 팔 수 있는 주식이 적을수록 좋아요.</li>
+      </ul>
+      <p>탈락 종목은 달력에서 빠지고, 아래 "탈락 종목"에 이유와 함께 모여요.</p>
     </div>
   </details>
-  <div id="groups"></div>
+  <div class="list" id="cards"></div>
+  <details class="fold" id="failFold" hidden><summary><span id="failTitle">탈락 종목</span><span class="chev">⌄</span></summary><div class="list" id="failCards"></div></details>
 </section>
 
-<section id="mySec" hidden>
-  <div class="sec-head"><h2>내 청약 기록</h2><span class="count">배정 주수·매도가를 적으면 수익이 계산돼요</span></div>
-  <div class="tbl"><table>
-    <thead><tr><th>종목</th><th>상장일</th><th class="r">공모가</th><th class="r">배정</th><th class="r">매도가</th><th class="r">수익</th></tr></thead>
-    <tbody id="myRows"></tbody>
-  </table></div>
+<section class="mytools">
+  <h2>강은의 청약 도구</h2>
+  <details class="box" open>
+    <summary class="crit" style="display:flex;justify-content:space-between;align-items:center;padding:16px 20px;font-weight:700;font-size:16px">이번 주 할 일 <span class="chev">⌄</span></summary>
+    <div class="todo" id="todo"></div>
+    <div style="padding:0 20px"><div class="money" id="money" hidden></div></div>
+  </details>
+  <details class="box">
+    <summary style="display:flex;justify-content:space-between;align-items:center;padding:16px 20px;font-weight:700;font-size:16px">내 증권 계좌 <span class="chev">⌄</span></summary>
+    <div class="acc">
+      <div class="chips" id="accounts"></div>
+      <p class="note">계좌가 있는 증권사를 눌러 두면 카드에 ✓가 붙고, 없는 곳은 미리 만들라고 알려 드려요. 이 기기에만 저장돼요.</p>
+    </div>
+  </details>
+  <details class="box" id="mySec" hidden>
+    <summary style="display:flex;justify-content:space-between;align-items:center;padding:16px 20px;font-weight:700;font-size:16px">내 청약 기록 <span class="chev">⌄</span></summary>
+    <div class="tbl"><table>
+      <thead><tr><th>종목</th><th>상장일</th><th class="r">공모가</th><th class="r">배정</th><th class="r">매도가</th><th class="r">수익</th></tr></thead>
+      <tbody id="myRows"></tbody>
+    </table></div>
+  </details>
+  <div class="box notices" id="notices" hidden></div>
 </section>
 
-<details class="crit">
-  <summary>꼭 알아둘 말</summary>
-  <div class="terms">
-    <div class="term"><b>수요예측</b><span>일반 청약 전에 기관에게 "얼마에 몇 주 살래요?"를 먼저 묻는 단계. 여기서 공모가가 정해져요.</span></div>
-    <div class="term"><b>균등배정</b><span>최소 수량만 넣어도 모두에게 똑같이 나눠 주는 방식. 주린이는 이것만 노려도 충분해요.</span></div>
-    <div class="term"><b>청약 준비금(증거금)</b><span>최소 수량 × 공모가 × 50%. 배정 못 받은 돈은 환불일에 돌아와요.</span></div>
-    <div class="term"><b>환불일</b><span>청약 마감 2영업일 뒤. 공휴일이 끼면 하루씩 밀려요.</span></div>
-    <div class="term"><b>시초가</b><span>상장 첫날 오전 9시에 처음 정해지는 가격. 공모가 대비 몇 %인지 보는 게 첫 성적표예요.</span></div>
-    <div class="term"><b>스팩(SPAC)</b><span>다른 회사와 합병하려고 만든 서류상 회사. 공모가 2,000원 고정이라 이 기준을 쓰지 않아요.</span></div>
-  </div>
-</details>
-
-<footer>평일 오전 8시·낮 12시 반·저녁 6시에 DART 공시를 자동 확인하고, 평일 저녁에 Claude가 수요예측 결과를 채워요. 정해진 기준에 따른 분류일 뿐 투자 권유가 아니에요. 청약 전에는 주관 증권사 공고를 꼭 다시 확인해 주세요.</footer>
+<footer id="foot">불러오는 중…</footer>
 </div>
 
 <script>
-const APPS={"한국투자증권":"한국투자","미래에셋증권":"M-STOCK","삼성증권":"mPOP","KB증권":"KB M-able","NH투자증권":"나무증권·QV","키움증권":"영웅문S#","신한투자증권":"신한 SOL증권","하나증권":"하나증권 원큐프로"};
+const APPS={"한국투자증권":"한국투자","미래에셋증권":"M-STOCK","삼성증권":"mPOP","KB증권":"KB M-able","NH투자증권":"나무증권","키움증권":"영웅문S#","신한투자증권":"신한 SOL증권","하나증권":"하나증권 원큐프로","IBK투자증권":"IBK투자증권"};
 const HOLI=new Set(["2026-12-25","2027-01-01"]);
 const EN=["JANUARY","FEBRUARY","MARCH","APRIL","MAY","JUNE","JULY","AUGUST","SEPTEMBER","OCTOBER","NOVEMBER","DECEMBER"];
 const WD="일월화수목금토";
@@ -303,10 +278,10 @@ let IPOS=[], META={};
 const now=new Date();const TODAY=new Date(now.getFullYear(),now.getMonth(),now.getDate());
 const D=s=>{const [y,m,d]=s.split("-").map(Number);return new Date(y,m-1,d)};
 const key=d=>`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;
+const TK=key(TODAY);
 const won=n=>Math.round(n).toLocaleString("ko-KR");
 const md=s=>{const x=D(s);return `${x.getMonth()+1}/${x.getDate()}(${WD[x.getDay()]})`};
 const days=(a,b)=>Math.round((D(b)-D(a))/864e5);
-const TK=key(TODAY);
 const esc=s=>String(s??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 let me={accounts:[],marks:{},alloc:{},sell:{}};
 try{const s=JSON.parse(localStorage.getItem("gongmo-me")||"null");if(s)me=Object.assign(me,s)}catch(e){}
@@ -318,156 +293,109 @@ const refund=x=>x.e?addBiz(x.e,2):null;
 const minq=x=>x.minq||10;
 const price=x=>x.fix||(x.band&&x.band[1])||0;
 const deposit=x=>price(x)*minq(x)*0.5;
+const fcText=x=>x.fc?md(x.fc).replace(/\(.\)/,""):"청약 2~3일 전";
 
 function judge(x){
-  if(x.spac)return{v:"spac",label:"스팩"};
+  if(x.spac)return{v:"spac"};
   const hi=x.band&&x.band[1], lo=x.band&&x.band[0];
   const r1=x.fix!=null&&hi?x.fix>=hi:null, r2=x.inst!=null?x.inst>=200:null;
   const a=x.lock!=null?x.lock>=5:null, b=x.float!=null?x.float<=30:null;
-  const out={r1,r2,a,b};
+  const o={r1,r2,a,b};
   if(r1===false||r2===false){
     const why=[];
-    if(r1===false){const pos=x.fix<lo?"희망 하단보다 낮은":x.fix===lo?"희망 하단인":"희망 범위 중간인";why.push(`확정공모가가 ${pos} ${won(x.fix)}원으로 정해졌어요(상단 ${won(hi)}원).`)}
-    if(r2===false)why.push(`기관경쟁률이 ${x.inst}:1로 기준 200:1에 ${(200-x.inst).toFixed(2)} 모자라요.`);
-    if(a===false&&b===false)why.push(`선택 A·B도 둘 다 못 맞췄어요. 확약 ${x.lock}%(5% 미만), 유통 물량 ${x.float}%(30% 초과).`);
-    return Object.assign(out,{v:"fail",label:"탈락",why});
+    if(r1===false){const pos=x.fix<lo?"희망 하단보다 낮은":x.fix===lo?"희망 하단인":"희망 범위 안의";why.push(`확정공모가가 ${pos} ${won(x.fix)}원으로 정해졌습니다(상단 ${won(hi)}원).`)}
+    if(r2===false)why.push(`기관경쟁률이 ${x.inst}:1로 기준 200:1에 ${(200-x.inst).toFixed(2)} 모자랍니다.`);
+    return Object.assign(o,{v:"fail",why});
   }
-  if(r1===null||r2===null)return Object.assign(out,{v:"wait",label:"결과 대기"});
-  if(a||b)return Object.assign(out,{v:"pass",label:"통과"});
-  if(a===false&&b===false){
-    return Object.assign(out,{v:"fail",label:"탈락",why:[`A·B 중 하나도 맞지 않아요. 의무보유확약이 ${x.lock}%로 5% 미만이고, 유통가능 물량도 ${x.float}%로 30%를 넘어요.`]});
-  }
-  return Object.assign(out,{v:"check",label:"확인 필요"});
+  if(r1===null||r2===null)return Object.assign(o,{v:"wait"});
+  if(a||b)return Object.assign(o,{v:"pass"});
+  if(a===false&&b===false)return Object.assign(o,{v:"fail",why:[`A·B 중 하나도 맞지 않습니다. 의무보유확약이 ${x.lock}%로 5% 미만이고, 유통가능 물량도 ${x.float}%로 30%를 넘습니다.`]});
+  return Object.assign(o,{v:"check"});
 }
 
-function verdictHTML(x,j){
-  if(j.v==="spac")return `<div class="verdict spac">스팩은 공모가 2,000원 고정이라 이 기준을 쓰지 않아요. 합병 소식이 없으면 보통 2,000원 근처에서 움직여요.</div>`;
-  if(j.v==="fail")return `<div class="verdict fail"><b>탈락 이유 ${j.why.length}가지</b><ol>${j.why.map(w=>`<li>${w}</li>`).join("")}</ol></div>`;
-  if(j.v==="wait"){
-    const when=x.fc?`${md(x.fc)}에 확정공모가·기관경쟁률·의무보유확약이 발표되면`:`청약 2~3일 전쯤 수요예측 결과가 나오면`;
-    return `<div class="verdict wait">아직 수요예측 결과가 나오지 않았어요. ${when} 통과 여부가 정해져요.</div>`;
-  }
-  if(j.v==="check"){
-    const miss=j.a==null&&j.b==null?"의무보유확약과 유통 물량":j.a==null?"의무보유확약":"유통 물량";
-    return `<div class="verdict check">필수 두 기준은 통과했지만, ${miss} 정보가 아직 없어 판단을 미뤄요. 증권신고서(원문)에서 확인할 수 있어요.</div>`;
-  }
+function badge(x,j){
+  if(j.v==="fail")return`<span class="badge r">탈락</span>`;
+  if(j.v==="spac")return`<span class="badge n">스팩</span>`;
+  if(j.v!=="pass")return`<span class="badge a">결과 대기</span>`;
+  if(x.l&&TK>x.l)return`<span class="badge n">상장 완료</span>`;
+  if(TK>x.e)return`<span class="badge g">상장 대기</span>`;
+  return`<span class="badge g">통과</span>`;
+}
+
+function stat(x){
+  const p=price(x);
+  if(!x.s)return`<small>일정 확인 중</small><strong>-</strong>`;
+  if(x.l&&TK===x.l)return`<small>상장 대기중</small><strong class="blue">오늘 상장</strong><small>9시 시초가 확인 전 · 확정공모가 ${won(x.fix||p)}원</small>`;
+  if(x.l&&TK>x.l)return`<small>상장 완료</small><strong>${md(x.l)}</strong><small>확정공모가 ${won(x.fix||p)}원</small>`;
+  if(TK>x.e)return`<small>상장 대기중</small><strong class="blue">${x.l?md(x.l)+" 상장":"상장일 미정"}</strong><small>${x.l?"D-"+days(TK,x.l)+" · ":""}확정공모가 ${won(x.fix||p)}원</small>`;
+  return`<small>청약 준비금 (최소 ${minq(x)}주)</small><strong>${p?won(deposit(x))+"원":"-"}</strong>${TK>=x.s?`<small style="color:var(--red-ink)">${TK===x.e?"오늘 16:00 마감":md(x.e)+" 16:00 마감"}</small>`:""}`;
+}
+
+function vbox(x,j){
+  if(j.v==="spac")return`<div class="vbox n">스팩은 공모가 2,000원 고정이라 이 기준을 쓰지 않습니다. 합병 소식이 없으면 보통 2,000원 근처에서 움직입니다.</div>`;
+  if(j.v==="fail")return`<div class="vbox r"><b>탈락 이유 ${j.why.length}가지</b><ol>${j.why.map((w,i)=>`<li>${i+1}. ${w}</li>`).join("")}</ol></div>`;
+  if(j.v==="wait")return`<div class="vbox a">아직 수요예측 결과가 나오지 않았습니다. ${x.fc?`수요예측이 끝나고 ${fcText(x)}에`:"청약 2~3일 전쯤"} 확정공모가·기관경쟁률·의무보유확약이 발표되고, 그때 통과 여부가 정해집니다.</div>`;
+  if(j.v==="check"){const m=j.a==null&&j.b==null?"의무보유확약과 유통가능 물량":j.a==null?"의무보유확약":"유통가능 물량";return`<div class="vbox a">필수 두 기준은 충족했지만 ${m} 정보가 아직 없어 통과 여부를 정하지 못했습니다. 원문(증권신고서)에서 확인할 수 있습니다.</div>`}
   const opt=j.a&&j.b?`A 의무보유확약 ${x.lock}%와 B 유통가능 물량 ${x.float}%를 모두 충족해`:j.a?`A 의무보유확약 ${x.lock}%로 선택 조건을 충족해`:`B 유통가능 물량 ${x.float}%로 선택 조건을 충족해`;
-  return `<div class="verdict pass">필수 두 기준(확정공모가 희망 상단 이상, 기관경쟁률 ${x.inst}:1)을 충족하고, ${opt} 통과했어요. 넣는다면 균등 최소 수량(${minq(x)}주)부터 생각해 보세요.</div>`;
+  return`<div class="vbox g">필수 두 기준(확정공모가 희망가 상단 이상, 기관경쟁률 ${x.inst.toLocaleString("ko-KR",{minimumFractionDigits:2,maximumFractionDigits:2})}:1)을 충족하고, ${opt} 통과했습니다.</div>`;
 }
 
-function rowsHTML(x,j){
-  if(j.v==="spac")return "";
-  const ic=v=>v===true?`<span class="ico y">✓</span>`:v===false?`<span class="ico n">✕</span>`:`<span class="ico u">·</span>`;
-  const vc=v=>v===false?" n":v==null?" u":"";
+function rows(x,j){
+  if(j.v==="spac")return"";
+  const ic=v=>v===true?`<span class="ico y">✓</span>`:v===false?`<span class="ico x">✕</span>`:`<span class="ico u">·</span>`;
+  const vc=v=>v===false?" x":v==null?" u":"";
   const pre=x.fix==null&&x.inst==null;
-  const unk=pre?"발표 전":"정보 없음";
-  const band=x.band&&x.band[0]?`희망 ${won(x.band[0])}~${won(x.band[1])}원 · 상단 이상`:"희망 범위 확인 중";
-  const opt=(j.a||j.b)?`<em>충족</em>`:"";
-  return `<div class="rows">
+  const fmtI=n=>n.toLocaleString("ko-KR",{minimumFractionDigits:2,maximumFractionDigits:2});
+  const band=x.band&&x.band[0]?`희망 ${won(x.band[0])}~${won(x.band[1])}원 · 상단 이상`:"희망가 확인 중";
+  return`<div class="rows">
    <div class="rh">필수 · 둘 다 충족</div>
-   <div class="row">${ic(j.r1)}<div class="lbl">확정공모가<span>${band}</span></div><div class="val${vc(j.r1)}">${x.fix!=null?won(x.fix)+"원":"발표 전"}</div></div>
-   <div class="row">${ic(j.r2)}<div class="lbl">기관경쟁률<span>200:1 이상</span></div><div class="val${vc(j.r2)}">${x.inst!=null?x.inst+":1":"발표 전"}</div></div>
-   <div class="rh">선택 · A 또는 B 하나 이상${opt}</div>
-   <div class="row">${ic(j.a)}<div class="lbl">A · 의무보유확약<span>5% 이상</span></div><div class="val${vc(j.a)}">${x.lock!=null?x.lock+"%":unk}</div></div>
-   <div class="row">${ic(j.b)}<div class="lbl">B · 상장 직후 유통가능 물량<span>30% 이하</span></div><div class="val${vc(j.b)}">${x.float!=null?x.float+"%":(x.float===undefined&&pre?"발표 전":"정보 없음")}</div></div>
+   <div class="row">${ic(j.r1)}<div class="lbl"><b>확정공모가</b><span>${band}</span></div><div class="val${vc(j.r1)}">${x.fix!=null?won(x.fix)+"원":"발표 전"}</div></div>
+   <div class="row">${ic(j.r2)}<div class="lbl"><b>기관경쟁률</b><span>200:1 이상</span></div><div class="val${vc(j.r2)}">${x.inst!=null?fmtI(x.inst)+":1":"발표 전"}</div></div>
+   <div class="rh">선택 · A 또는 B 하나 이상${(j.a||j.b)?"<em>충족</em>":""}</div>
+   <div class="row">${ic(j.a)}<div class="lbl"><b>A · 의무보유확약</b><span>5% 이상</span></div><div class="val${vc(j.a)}">${x.lock!=null?x.lock.toFixed(2)+"%":pre?"발표 전":"정보 없음"}</div></div>
+   <div class="row">${ic(j.b)}<div class="lbl"><b>B · 상장 직후 유통가능 물량</b><span>30% 이하</span></div><div class="val${vc(j.b)}">${x.float!=null?x.float.toFixed(2)+"%":"정보 없음"}</div></div>
   </div>`;
 }
 
-function phase(x){
-  const p=price(x);const dep=p?`${won(deposit(x))}원`:"-";
-  if(!x.s)return{small:"일정 확인 중",big:"-",sub:""};
-  if(x.l&&TK===x.l)return{small:"상장 대기중",big:"오늘 상장",cls:"red",sub:`9시 시초가 확인 · 확정공모가 ${won(x.fix||p)}원`};
-  if(x.l&&TK>x.l)return{small:"상장 완료",big:`${md(x.l)}`,sub:`공모가 ${won(x.fix||p)}원`};
-  if(TK>x.e)return{small:"상장 대기중",big:x.l?`${md(x.l)} 상장`:"상장일 미정",cls:"blue",sub:`${x.l?"D-"+days(TK,x.l)+" · ":""}확정공모가 ${won(x.fix||p)}원`};
-  if(TK>=x.s)return{small:"청약 중",big:TK===x.e?"오늘 16시 마감":`${md(x.e)} 16시 마감`,cls:"red",sub:`준비금 ${dep} (최소 ${minq(x)}주)`};
-  return{small:`청약 준비금 (최소 ${minq(x)}주)`,big:dep,sub:`D-${days(TK,x.s)}${x.fix?"":" · 상단 기준"}`};
+function live(x){
+  if(!(x.s&&TK>=x.s&&TK<=x.e))return"";
+  const t=`${now.getHours()<12?"오전":"오후"} ${now.getHours()%12||12}:${String(now.getMinutes()).padStart(2,"0")}`;
+  return`<div class="live"><div class="live-h">증권사별 실시간 경쟁률</div>${(x.b||[]).map(b=>`<div class="live-b"><b>${esc(b)}</b><span>「${esc(APPS[b]||b)}」 앱에서 직접 확인</span><div class="links"><a href="https://play.google.com/store/search?q=${encodeURIComponent(APPS[b]||b)}&c=apps" target="_blank" rel="noopener">안드로이드 앱 ↗</a><span class="note">아이폰은 App Store에서 「${esc(APPS[b]||b)}」 검색</span></div></div>`).join("")}<div class="live-b" style="padding-top:0"><small>${t} 기준 · 숫자는 계속 바뀌고, 마감 직전에 가장 크게 오릅니다</small></div></div>`;
 }
 
-function brokersHTML(x){
-  if(!x.b||!x.b.length)return `<span class="brk">주관사 확인 중</span>`;
-  return `<span class="brk">${x.b.map(b=>me.accounts.includes(b)?`<span class="have">${esc(b)} ✓</span>`:esc(b)).join(" · ")}</span>`;
-}
-
-function cardHTML(x){
-  const j=judge(x), ph=phase(x), mk=me.marks[x.n];
+function card(x,open){
+  const j=judge(x), mk=me.marks[x.n];
   const kospi=/코스피|유가/.test(x.mk||"");
-  const hasAcc=x.b&&x.b.some(b=>me.accounts.includes(b));
-  const live=x.s&&TK<=x.e&&j.v!=="fail";
-  const apps=(x.b||[]).map(b=>APPS[b]?`${b} 「${APPS[b]}」 앱`:`${b} 앱`).join(", ");
-  const accNote=me.accounts.length&&x.b&&x.b.length&&!hasAcc&&x.s&&TK<=x.e?`<p class="alert">내 계좌가 없는 증권사예요. 청약하려면 ${esc(x.b[0])} 계좌를 미리 만들어 두세요. (당일 개설은 청약이 안 되는 곳도 있어요)</p>`:"";
+  const brk=x.b&&x.b.length?x.b.map(b=>me.accounts.includes(b)?`<span class="have">${esc(b)} ✓</span>`:esc(b)).join(" · "):"주관사 확인 중";
+  const noAcc=me.accounts.length&&x.b&&x.b.length&&!x.b.some(b=>me.accounts.includes(b))&&x.e&&TK<=x.e;
   const rf=refund(x);
-  const mine=mk==="done"?`<div class="mine-in">배정 <input type="number" min="0" inputmode="numeric" id="al-${esc(x.n)}" data-al="${esc(x.n)}" value="${me.alloc[x.n]??""}" placeholder="주"> 매도가 <input type="number" min="0" inputmode="numeric" id="se-${esc(x.n)}" data-se="${esc(x.n)}" value="${me.sell[x.n]??""}" placeholder="원"></div>`:"";
-  return `<details class="card" id="c-${esc(x.n)}" data-n="${esc(x.n)}">
-   <summary>
-    <div class="c-left">
-      <div class="c-name"><h3>${esc(x.n)}</h3><span class="tag ${kospi?"kospi":"mk"}">${esc((x.mk||"확인 중").replace("유가","코스피"))}</span>${brokersHTML(x)}</div>
-      <div class="c-dates">
-        <span><span class="tag sub">청약</span>${x.s?`<span class="num">${md(x.s)}~${md(x.e)} 16:00</span>`:"확인 중"}</span>
-        <span><span class="tag lst">상장</span>${x.l?`<span class="num">${md(x.l)}</span>`:"미정"}</span>
-        ${mk?`<span class="tag sub" style="background:var(--stamp);color:var(--paper)">${mk==="done"?"청약함":"찜"}</span>`:""}
-      </div>
+  return`<details class="box card" id="c-${esc(x.n)}"${open?" open":""}>
+  <summary>
+   <div class="cl">
+    <div class="cname"><h3>${esc(x.n)}</h3><span class="mk${kospi?" kospi":""}">${kospi?"코스피":esc(x.mk||"확인 중")}</span><span class="brk">${brk}</span></div>
+    <div class="cdates">
+     <span><span class="pill s">청약</span><span class="tnum">${x.s?`${md(x.s)}~${md(x.e)} 16:00`:"확인 중"}</span></span>
+     <span><span class="pill l">상장</span><span class="tnum">${x.l?md(x.l):"미정"}</span></span>
+     ${mk?`<span class="pill me">${mk==="done"?"청약함":"찜"}</span>`:""}
     </div>
-    <div class="c-right">
-      <div class="c-stat"><small>${ph.small}</small><strong class="${ph.cls||""}">${ph.big}</strong>${ph.sub?`<small>${ph.sub}</small>`:""}</div>
-      <span class="badge ${j.v}">${j.label}</span>
-      <span class="chev" aria-hidden="true">⌄</span>
-    </div>
-   </summary>
-   <div class="c-body">
-    ${verdictHTML(x,j)}
-    ${rowsHTML(x,j)}
-    <p class="about"><b>어떤 회사?</b> ${esc(x.d||"설명 준비 중이에요.")}</p>
-    <div class="facts">
-      <div class="fact"><span>청약 준비금</span><b>${price(x)?won(deposit(x))+"원":"-"}</b><span>최소 ${minq(x)}주${x.minq?"":" (보통 기준)"}</span></div>
-      <div class="fact"><span>환불일</span><b>${rf?md(rf):"-"}</b><span>못 받은 돈이 돌아오는 날</span></div>
-      <div class="fact"><span>일반 청약 경쟁률</span><b>${x.retail!=null?x.retail+":1":"-"}</b><span>${x.retail!=null?"최종":"청약 마감 후"}</span></div>
-      <div class="fact"><span>공모 시장</span><b>${esc((x.mk||"확인 중").replace("유가","코스피"))}</b><span>${esc((x.b||[]).length>1?"주관사 "+x.b.length+"곳":"")}</span></div>
-    </div>
-    ${live?`<div class="live"><b>실시간 청약 경쟁률</b> · ${esc(apps)}에서 직접 확인하세요. 숫자는 계속 바뀌고, 마감 직전에 가장 크게 올라요.</div>`:""}
-    ${accNote}
-    ${x.memo?`<p class="note">${esc(x.memo)}</p>`:""}
-    ${x.alert?`<p class="alert">${esc(x.alert)}</p>`:""}
-    <div class="actions">
-      <div class="mark">
-        <button class="mbtn" data-mark="want" data-n="${esc(x.n)}" aria-pressed="${mk==="want"}">찜하기</button>
-        <button class="mbtn" data-mark="done" data-n="${esc(x.n)}" aria-pressed="${mk==="done"}">청약했어요</button>
-      </div>
-      ${x.dart?`<a class="note" href="https://dart.fss.or.kr/dsaf001/main.do?rcpNo=${esc(x.dart)}" target="_blank" rel="noopener">원문 보기 (DART)</a>`:""}
-    </div>
-    ${mine}
    </div>
-  </details>`;
-}
-
-function renderTodo(){
-  const end=new Date(TODAY);end.setDate(end.getDate()+6);const EK=key(end);
-  const items=[];
-  const inWin=k=>k&&k>=TK&&k<=EK;
-  IPOS.forEach(x=>{
-    const j=judge(x), mk=me.marks[x.n];
-    if(x.s&&x.e>=TK&&x.s<=EK){
-      const k=x.s<TK?TK:x.s;
-      const t=j.v==="pass"?`<b style="color:var(--good)">통과</b>`:j.v==="fail"?`<span style="color:var(--bad)">탈락</span>`:j.label;
-      items.push({k:x.e>=TK&&x.s<=TK?TK:k,o:1,n:x.n,html:`<button class="todo-link" data-go="${esc(x.n)}">${esc(x.n)}</button> 청약 ${x.s<=TK?(TK===x.e?"오늘 16시 마감":`${md(x.e)} 16시까지`):`시작 (~${md(x.e)})`} · ${t}`,sub:`${(x.b||[]).join(", ")} · 준비금 ${price(x)?won(deposit(x))+"원":"-"} (최소 ${minq(x)}주)`});
-    }
-    if(inWin(x.fc)&&j.v==="wait")items.push({k:x.fc,o:0,n:x.n,html:`<button class="todo-link" data-go="${esc(x.n)}">${esc(x.n)}</button> 수요예측 결과 발표`,sub:"확정공모가·기관경쟁률이 나오면 통과 여부가 정해져요"});
-    if(inWin(x.l))items.push({k:x.l,o:2,n:x.n,html:`<button class="todo-link" data-go="${esc(x.n)}">${esc(x.n)}</button> 상장${mk==="done"?" · <b style=\"color:var(--stamp)\">내 종목</b>":""}`,sub:mk==="done"?"9시 시초가를 보고 미리 정한 매도 계획대로":`9시 시초가 · 공모가 ${won(x.fix||price(x))}원 대비 확인`});
-    const rf=refund(x);
-    if(mk==="done"&&inWin(rf))items.push({k:rf,o:3,n:x.n,html:`${esc(x.n)} 환불일`,sub:"못 받은 증거금이 들어와요. 다음 청약에 다시 쓸 수 있어요"});
-  });
-  items.sort((a,b)=>a.k<b.k?-1:a.k>b.k?1:a.o-b.o);
-  const el=document.getElementById("todo");
-  el.innerHTML=items.length?items.map(i=>{const t=i.k===TK?"오늘":days(TK,i.k)===1?"내일":md(i.k);return `<div class="todo-row"><span class="when${i.k===TK?" today":""}">${t}</span><div class="todo-text"><div>${i.html}</div><span>${i.sub}</span></div></div>`}).join(""):`<p class="muted" style="padding:12px 0">이번 주엔 청약·상장 일정이 없어요.</p>`;
-  const pass=IPOS.filter(x=>judge(x).v==="pass"&&x.s&&x.e>=TK&&x.s<=EK);
-  const m=document.getElementById("money");
-  if(pass.length){const sum=pass.reduce((a,x)=>a+deposit(x),0);m.hidden=false;
-    m.innerHTML=`<span>이번 주 <b>통과</b> 종목 ${pass.length}개를 모두 균등 최소 수량만 넣으면</span><span><b class="num">${won(sum)}원</b> 필요해요</span><span class="muted">(${pass.map(x=>x.n).join(", ")})</span>`;
-  }else m.hidden=true;
-}
-
-function renderAccounts(){
-  const all=[...new Set(IPOS.flatMap(x=>x.b||[]))].sort((a,b)=>IPOS.filter(x=>(x.b||[]).includes(b)).length-IPOS.filter(x=>(x.b||[]).includes(a)).length);
-  document.getElementById("accounts").innerHTML=all.map(b=>`<button class="chip" data-acc="${esc(b)}" aria-pressed="${me.accounts.includes(b)}">${esc(b)} <span class="num" style="opacity:.6">${IPOS.filter(x=>(x.b||[]).includes(b)&&x.e>=TK).length}</span></button>`).join("");
+   <div class="cr"><div class="stat">${stat(x)}</div>${badge(x,j)}<span class="chev" aria-hidden="true">⌃</span></div>
+  </summary>
+  <div class="cbody">
+   ${live(x)}
+   ${vbox(x,j)}
+   ${rows(x,j)}
+   <p class="about"><b>어떤 회사?</b> ${esc(x.d||"설명 준비 중이에요.")}${rf&&x.e>=TK?` <span class="note">· 환불일 ${md(rf)}</span>`:""}${x.retail!=null?` <span class="note">· 일반 청약 ${x.retail.toLocaleString("ko-KR")}:1</span>`:""}</p>
+   ${x.memo?`<p class="note">${esc(x.memo)}</p>`:""}
+   ${x.alert?`<p class="warn">${esc(x.alert)}</p>`:""}
+   ${noAcc?`<p class="warn">내 계좌가 없는 증권사예요. 청약하려면 ${esc(x.b[0])} 계좌를 미리 만들어 두세요.</p>`:""}
+   <div class="foot-row">
+    <div class="mark"><button class="mbtn" data-mark="want" data-n="${esc(x.n)}" aria-pressed="${mk==="want"}">찜하기</button><button class="mbtn" data-mark="done" data-n="${esc(x.n)}" aria-pressed="${mk==="done"}">청약했어요</button></div>
+    ${x.dart?`<a class="orig" href="https://dart.fss.or.kr/dsaf001/main.do?rcpNo=${esc(x.dart)}" target="_blank" rel="noopener">원문 보기</a>`:""}
+   </div>
+   ${mk==="done"?`<div class="mine-in">배정 <input type="number" min="0" inputmode="numeric" id="al-${esc(x.n)}" data-al="${esc(x.n)}" value="${esc(me.alloc[x.n]??"")}" placeholder="주"> 매도가 <input type="number" min="0" inputmode="numeric" id="se-${esc(x.n)}" data-se="${esc(x.n)}" value="${esc(me.sell[x.n]??"")}" placeholder="원"></div>`:""}
+  </div>
+ </details>`;
 }
 
 function renderCal(){
@@ -476,22 +404,21 @@ function renderCal(){
   document.getElementById("mko").textContent=`${viewY}년 ${viewM+1}월`;
   const first=new Date(viewY,viewM,1), last=new Date(viewY,viewM+1,0);
   const start=new Date(first);start.setDate(1-first.getDay());
-  let h=`<div class="dows">${[...WD].map(d=>`<div>${d}</div>`).join("")}</div>`;
+  let h=`<div class="dows">${[...WD].map((d,i)=>`<div class="${i===0?"sun":i===6?"sat":""}">${d}</div>`).join("")}</div>`;
   for(let ws=new Date(start);ws<=last;ws.setDate(ws.getDate()+7)){
     const wk=[...Array(7)].map((_,i)=>{const d=new Date(ws);d.setDate(d.getDate()+i);return d});
-    const wsK=key(wk[0]), weK=key(wk[6]);
-    const segs=[];
+    const wsK=key(wk[0]),weK=key(wk[6]);const segs=[];
     IPOS.forEach(x=>{
-      const j=judge(x);const mine=me.marks[x.n]?" mine":"";
-      if(x.s&&x.e>=wsK&&x.s<=weK){const a=x.s<wsK?wsK:x.s,b=x.e>weK?weK:x.e;segs.push({a,b,cls:(j.v==="pass"?"pass":j.v==="fail"?"fail":"wait")+mine,lab:"청약",n:x.n})}
-      if(x.l&&x.l>=wsK&&x.l<=weK)segs.push({a:x.l,b:x.l,cls:"lst"+mine,lab:"상장",n:x.n});
+      const j=judge(x);if(j.v==="fail")return;
+      const wait=j.v!=="pass", mine=me.marks[x.n]?" mine":"";
+      if(x.s&&x.e>=wsK&&x.s<=weK)segs.push({a:x.s<wsK?wsK:x.s,b:x.e>weK?weK:x.e,cls:(wait?"w":"s")+mine,lab:"청약",n:x.n});
+      if(x.l&&x.l>=wsK&&x.l<=weK)segs.push({a:x.l,b:x.l,cls:(wait?"w":"l")+mine,lab:"상장",n:x.n});
     });
     segs.sort((p,q)=>p.a<q.a?-1:p.a>q.a?1:(days(q.a,q.b)-days(p.a,p.b)));
-    const lanes=[];
-    segs.forEach(s=>{let l=lanes.findIndex(e=>e<s.a);if(l<0){l=lanes.length;lanes.push(s.b)}else lanes[l]=s.b;s.lane=l});
-    const bg=wk.map(d=>`<div class="${d.getMonth()!==viewM?"out":""}${key(d)===TK?" today":""}"></div>`).join("");
+    const lanes=[];segs.forEach(s=>{let l=lanes.findIndex(e=>e<s.a);if(l<0){l=lanes.length;lanes.push(s.b)}else lanes[l]=s.b;s.lane=l});
+    const bg=wk.map(d=>`<div class="${d.getMonth()!==viewM?"out":""}"></div>`).join("");
     const dn=wk.map((d,i)=>`<div class="dn${i===0?" sun":i===6?" sat":""}${d.getMonth()!==viewM?" out":""}${key(d)===TK?" today":""}" style="grid-column:${i+1}"><span>${d.getDate()}</span></div>`).join("");
-    const bars=segs.map(s=>{const c0=days(wsK,s.a)+1,c1=days(wsK,s.b)+2;return `<button class="bar ${s.cls}" style="grid-column:${c0}/${c1};grid-row:${s.lane+2}" data-go="${esc(s.n)}" title="${esc(s.n)} ${s.lab}"><b>${s.lab}</b>${esc(s.n)}</button>`}).join("");
+    const bars=segs.map(s=>`<button class="bar ${s.cls}" style="grid-column:${days(wsK,s.a)+1}/${days(wsK,s.b)+2};grid-row:${s.lane+2}" data-go="${esc(s.n)}" title="${esc(s.n)} ${s.lab}"><b>${s.lab}</b>${esc(s.n)}</button>`).join("");
     h+=`<div class="week"><div class="wbg">${bg}</div>${dn}${bars}</div>`;
   }
   document.getElementById("cal").innerHTML=h;
@@ -500,62 +427,79 @@ function renderCal(){
 function renderList(){
   const mk=`${viewY}-${String(viewM+1).padStart(2,"0")}`;
   const list=IPOS.filter(x=>x.s&&x.s.startsWith(mk));
-  const g={pass:[],wait:[],fail:[],spac:[]};
-  list.forEach(x=>{const v=judge(x).v;(g[v==="check"?"wait":v]).push(x)});
+  const pass=[],wait=[],fail=[];
+  list.forEach(x=>{const v=judge(x).v;(v==="pass"?pass:v==="fail"?fail:wait).push(x)});
   document.getElementById("listTitle").textContent=`${viewM+1}월 청약 공모주`;
-  document.getElementById("listCount").textContent=`${list.length}건 · 통과 ${g.pass.length} · 대기 ${g.wait.length} · 탈락 ${g.fail.length}${g.spac.length?" · 스팩 "+g.spac.length:""}`;
-  const block=(t,arr)=>arr.length?`<p class="group-title">${t}</p><div class="cards">${arr.map(cardHTML).join("")}</div>`:"";
-  const fold=(t,arr)=>arr.length?`<details class="fold"><summary>${t} ${arr.length}건 · 펼치기</summary><div class="cards">${arr.map(cardHTML).join("")}</div></details>`:"";
-  document.getElementById("groups").innerHTML=list.length?
-    `<div style="display:flex;flex-direction:column;gap:10px">${block("통과",g.pass)}${block("결과 대기",g.wait)}${fold("스팩",g.spac)}${fold("탈락 종목",g.fail)}</div>`:
-    `<div class="empty">이 달에 시작하는 청약이 없어요.</div>`;
+  document.getElementById("listCount").textContent=`${list.length}건 · 통과 ${pass.length} · 대기 ${wait.length} · 탈락 ${fail.length}`;
+  const openIt=x=>{const j=judge(x).v;return j==="pass"&&!(x.l&&TK>x.l)||(x.s&&TK>=x.s&&TK<=x.e)};
+  const main=[...pass,...wait];
+  document.getElementById("cards").innerHTML=main.length?main.map(x=>card(x,openIt(x))).join(""):(fail.length?"":`<div class="empty">이 달에 시작하는 청약이 없어요.</div>`);
+  const ff=document.getElementById("failFold");ff.hidden=!fail.length;
+  document.getElementById("failTitle").innerHTML=`탈락 종목 ${fail.length}건<small>${ff.open?"접기":"펼치기"}</small>`;
+  document.getElementById("failCards").innerHTML=fail.map(x=>card(x,true)).join("");
+}
+
+function renderTodo(){
+  const end=new Date(TODAY);end.setDate(end.getDate()+6);const EK=key(end);
+  const inWin=k=>k&&k>=TK&&k<=EK, items=[];
+  IPOS.forEach(x=>{
+    const j=judge(x),mk=me.marks[x.n];
+    const tag=j.v==="pass"?`<b style="color:var(--green-ink)">통과</b>`:j.v==="fail"?`<span style="color:var(--red-ink)">탈락</span>`:"결과 대기";
+    if(x.s&&x.e>=TK&&x.s<=EK)items.push({k:x.s<TK?TK:x.s,o:1,h:`<button class="tlink" data-go="${esc(x.n)}">${esc(x.n)}</button> 청약 ${x.s<=TK?(TK===x.e?"오늘 16시 마감":md(x.e)+" 16시까지"):"시작 (~"+md(x.e)+")"} · ${tag}`,s:`${(x.b||[]).join(", ")} · 준비금 ${price(x)?won(deposit(x))+"원":"-"} (최소 ${minq(x)}주)`});
+    if(inWin(x.fc)&&j.v==="wait")items.push({k:x.fc,o:0,h:`<button class="tlink" data-go="${esc(x.n)}">${esc(x.n)}</button> 수요예측 결과 발표`,s:"확정공모가·기관경쟁률이 나오면 통과 여부가 정해져요"});
+    if(inWin(x.l)&&j.v!=="fail")items.push({k:x.l,o:2,h:`<button class="tlink" data-go="${esc(x.n)}">${esc(x.n)}</button> 상장${mk==="done"?` · <b style="color:var(--red-ink)">내 종목</b>`:""}`,s:mk==="done"?"9시 시초가를 보고 미리 정한 매도 계획대로":`9시 시초가 · 공모가 ${won(x.fix||price(x))}원 대비 확인`});
+    const rf=refund(x);if(mk==="done"&&inWin(rf))items.push({k:rf,o:3,h:`${esc(x.n)} 환불일`,s:"못 받은 증거금이 들어와요"});
+  });
+  items.sort((a,b)=>a.k<b.k?-1:a.k>b.k?1:a.o-b.o);
+  document.getElementById("todo").innerHTML=items.length?items.map(i=>{const t=i.k===TK?"오늘":days(TK,i.k)===1?"내일":md(i.k);return`<div class="trow"><span class="when${i.k===TK?" today":""}">${t}</span><div class="ttext"><div>${i.h}</div><span>${i.s}</span></div></div>`}).join(""):`<p class="note" style="padding:12px 0">이번 주엔 청약·상장 일정이 없어요.</p>`;
+  const pass=IPOS.filter(x=>judge(x).v==="pass"&&x.s&&x.e>=TK&&x.s<=EK);const m=document.getElementById("money");
+  if(pass.length){m.hidden=false;m.innerHTML=`이번 주 통과 종목 ${pass.length}개를 균등 최소 수량만 넣으면 <b class="tnum">${won(pass.reduce((a,x)=>a+deposit(x),0))}원</b>이 필요해요 (${pass.map(x=>esc(x.n)).join(", ")})`}else m.hidden=true;
+}
+
+function renderAccounts(){
+  const all=[...new Set(IPOS.flatMap(x=>x.b||[]))].sort((a,b)=>IPOS.filter(x=>(x.b||[]).includes(b)).length-IPOS.filter(x=>(x.b||[]).includes(a)).length);
+  document.getElementById("accounts").innerHTML=all.map(b=>`<button class="chip" data-acc="${esc(b)}" aria-pressed="${me.accounts.includes(b)}">${esc(b)}</button>`).join("");
 }
 
 function renderMine(){
-  const done=IPOS.filter(x=>me.marks[x.n]==="done");
-  document.getElementById("mySec").hidden=!done.length;
-  let tot=0;
-  document.getElementById("myRows").innerHTML=done.map(x=>{
-    const p=x.fix||price(x),al=+me.alloc[x.n]||0,se=+me.sell[x.n]||0;
-    const pr=al&&se?(se-p)*al:null;if(pr!=null)tot+=pr;
-    return `<tr><td>${esc(x.n)}</td><td class="num">${x.l?md(x.l):"미정"}</td><td class="r num">${won(p)}</td><td class="r num">${al?al+"주":"-"}</td><td class="r num">${se?won(se):"-"}</td><td class="r num ${pr==null?"":pr>=0?"up":"down"}">${pr==null?"-":(pr>=0?"+":"")+won(pr)+"원"}</td></tr>`;
-  }).join("")+(done.some(x=>me.alloc[x.n]&&me.sell[x.n])?`<tr><td colspan="5"><b>합계</b> <span class="muted">(수수료·세금 빼기 전)</span></td><td class="r num ${tot>=0?"up":"down"}">${(tot>=0?"+":"")+won(tot)}원</td></tr>`:"");
+  const done=IPOS.filter(x=>me.marks[x.n]==="done");document.getElementById("mySec").hidden=!done.length;let tot=0;
+  document.getElementById("myRows").innerHTML=done.map(x=>{const p=x.fix||price(x),al=+me.alloc[x.n]||0,se=+me.sell[x.n]||0,pr=al&&se?(se-p)*al:null;if(pr!=null)tot+=pr;
+    return`<tr><td>${esc(x.n)}</td><td class="tnum">${x.l?md(x.l):"미정"}</td><td class="r tnum">${won(p)}</td><td class="r tnum">${al?al+"주":"-"}</td><td class="r tnum">${se?won(se):"-"}</td><td class="r tnum ${pr==null?"":pr>=0?"up":"down"}">${pr==null?"-":(pr>=0?"+":"")+won(pr)+"원"}</td></tr>`}).join("")
+    +(done.some(x=>me.alloc[x.n]&&me.sell[x.n])?`<tr><td colspan="5"><b>합계</b> <span class="note">(수수료·세금 빼기 전)</span></td><td class="r tnum ${tot>=0?"up":"down"}">${(tot>=0?"+":"")+won(tot)}원</td></tr>`:"");
 }
 
 function renderMeta(){
-  const t=META.updated?META.updated.replace("T"," ").slice(0,16):"-";
-  document.getElementById("asof").innerHTML=`기준 시각 <span class="num">${t}</span> · ${esc(META.updated_by||"")}`;
-  const n=(META.notices||[]).slice(0,4);const el=document.getElementById("notices");
-  if(n.length){el.hidden=false;el.innerHTML=`<b>새 공시</b>`+n.map(x=>`<a href="https://dart.fss.or.kr/dsaf001/main.do?rcpNo=${esc(x.rcept_no)}" target="_blank" rel="noopener">${esc(x.date)} · ${esc(x.text)}</a>`).join("")}
+  let t="-";
+  if(META.updated){const m=META.updated.match(/(\d+)-(\d+)-(\d+)T(\d+):(\d+)/);if(m){const h=+m[4];t=`${+m[2]}. ${+m[3]}. ${h<12?"오전":"오후"} ${String(h%12||12).padStart(2,"0")}:${m[5]}`}}
+  document.getElementById("foot").innerHTML=`기준 시각 ${t}<br>공모 일정과 공모가는 증권신고서 정정에 따라 바뀔 수 있습니다. 이 화면은 정해진 기준에 따른 분류 결과일 뿐 투자 권유가 아니며, 청약 여부는 본인이 판단해 결정해 주세요.`;
+  const n=(META.notices||[]).slice(0,4),el=document.getElementById("notices");
+  if(n.length){el.hidden=false;el.innerHTML=`<b>최근 DART 공시</b>`+n.map(x=>`<a href="https://dart.fss.or.kr/dsaf001/main.do?rcpNo=${esc(x.rcept_no)}" target="_blank" rel="noopener">${esc(x.date)} · ${esc(x.text)}</a>`).join("")}
 }
 
-function all(){renderTodo();renderAccounts();renderCal();renderList();renderMine()}
+function all(){renderCal();renderList();renderTodo();renderAccounts();renderMine()}
+function keep(fn){const ids=[...document.querySelectorAll(".card")].map(c=>[c.id,c.open]);const fo=document.getElementById("failFold").open;fn();
+  ids.forEach(([id,o])=>{const e=document.getElementById(id);if(e)e.open=o});document.getElementById("failFold").open=fo;renderFoldTitle()}
+function renderFoldTitle(){const ff=document.getElementById("failFold");const s=ff.querySelector("small");if(s)s.textContent=ff.open?"접기":"펼치기"}
 function go(n){
-  const [y,m]=(IPOS.find(x=>x.n===n)||{}).s?.split("-").map(Number)||[];
-  if(y&&(y!==viewY||m-1!==viewM)){viewY=y;viewM=m-1;renderCal();renderList()}
+  const x=IPOS.find(i=>i.n===n);if(x&&x.s){const [y,m]=x.s.split("-").map(Number);if(y!==viewY||m-1!==viewM){viewY=y;viewM=m-1;renderCal();renderList()}}
   const el=document.getElementById("c-"+n);if(!el)return;
+  if(el.closest("#failFold"))document.getElementById("failFold").open=true;
   el.open=true;el.scrollIntoView({behavior:matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth",block:"start"});
   el.classList.add("flash");setTimeout(()=>el.classList.remove("flash"),1400);
 }
-function keepOpen(fn){const open=[...document.querySelectorAll(".card[open],.fold[open]")].map(e=>e.id||e.querySelector("summary").textContent);fn();
-  open.forEach(id=>{const e=document.getElementById(id);if(e)e.open=true;else document.querySelectorAll(".fold").forEach(f=>{if(f.querySelector("summary").textContent===id)f.open=true})})}
-
+document.getElementById("failFold").addEventListener("toggle",renderFoldTitle);
 document.addEventListener("click",e=>{
   const t=e.target.closest("button");if(!t)return;
   if(t.dataset.go){e.preventDefault();go(t.dataset.go);return}
-  if(t.dataset.acc){const b=t.dataset.acc;me.accounts=me.accounts.includes(b)?me.accounts.filter(a=>a!==b):[...me.accounts,b];save();keepOpen(all);return}
-  if(t.dataset.mark){const n=t.dataset.n,m=t.dataset.mark;if(me.marks[n]===m)delete me.marks[n];else me.marks[n]=m;save();keepOpen(all);return}
+  if(t.dataset.acc){const b=t.dataset.acc;me.accounts=me.accounts.includes(b)?me.accounts.filter(a=>a!==b):[...me.accounts,b];save();keep(all);return}
+  if(t.dataset.mark){const n=t.dataset.n,m=t.dataset.mark;if(me.marks[n]===m)delete me.marks[n];else me.marks[n]=m;save();keep(all);return}
   if(t.id==="prev"||t.id==="next"){viewM+=t.id==="prev"?-1:1;if(viewM<0){viewM=11;viewY--}if(viewM>11){viewM=0;viewY++}renderCal();renderList();return}
   if(t.id==="thism"){viewY=TODAY.getFullYear();viewM=TODAY.getMonth();renderCal();renderList()}
 });
-document.addEventListener("change",e=>{
-  const t=e.target;
-  if(t.dataset.al){me.alloc[t.dataset.al]=t.value;save();renderMine()}
-  if(t.dataset.se){me.sell[t.dataset.se]=t.value;save();renderMine()}
-});
+document.addEventListener("change",e=>{const t=e.target;if(t.dataset.al){me.alloc[t.dataset.al]=t.value;save();renderMine()}if(t.dataset.se){me.sell[t.dataset.se]=t.value;save();renderMine()}});
 
 fetch("data.json?t="+Date.now()).then(r=>r.json()).then(d=>{META=d;IPOS=(d.ipos||[]).slice().sort((a,b)=>(a.s||"9")<(b.s||"9")?-1:1);renderMeta();all()})
- .catch(()=>{document.getElementById("asof").textContent="일정 파일(data.json)을 못 불러왔어요. 잠시 뒤 새로고침해 보세요."});
+ .catch(()=>{document.getElementById("foot").textContent="일정 파일(data.json)을 못 불러왔어요. 잠시 뒤 새로고침해 보세요."});
 </script>
 </body>
 </html>
