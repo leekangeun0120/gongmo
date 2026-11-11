@@ -195,6 +195,27 @@ td.r,th.r{text-align:right}
 .notices b{font-size:13px;color:var(--muted)}
 .notices a{color:var(--soft)}
 footer{border-top:1px solid var(--line);padding-top:16px;font-size:13.5px;color:var(--muted);line-height:1.7}
+
+/* ── 폰: 달력을 화면 폭에 맞추기 ── */
+@media (max-width:600px){
+  .calbox{padding:12px 8px 14px}
+  .top{gap:12px;padding-bottom:10px}
+  .mnum{font-size:58px}
+  .men{font-size:13px;letter-spacing:.22em}
+  .mko{font-size:13px}
+  .nav button{height:32px;min-width:34px;padding:0 10px;font-size:14px}
+  .sign b{font-size:12.5px;padding:4px 8px;border-width:2px}
+  .sign i{height:20px;width:4px}
+  .legend{gap:10px;font-size:12px;padding:10px 2px 8px}
+  .cal-scroll{overflow:visible}
+  .cal{min-width:0}
+  .dows div{font-size:11.5px;padding:5px 0}
+  .week{min-height:60px;row-gap:3px;padding-bottom:6px}
+  .dn{font-size:12px;padding:4px 4px 2px}
+  .dn.today span{padding:0 6px}
+  .bar{font-size:10.5px;line-height:1.35;padding:1px 3px;margin:0 1px;border-width:1px;border-radius:4px;text-overflow:clip}
+  .bar b{display:none}
+}
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
 </style>
 </head>
