@@ -52,7 +52,9 @@ def recent_filings(days=45):
             raise RuntimeError(f"DART 오류 {res.get('status')}: {res.get('message')}")
         for f in res.get("list", []):
             # 아직 상장 안 된 회사(E=기타, N=코넥스)만. 상장사의 유상증자는 제외
-            if "증권신고서(지분증권)" in f.get("report_nm", "") and f.get("corp_cls") in ("E", "N"):
+            nm = f.get("report_nm", "")
+            # 철회신고서도 함께 본다 (공모를 접으면 이 서류가 올라옴)
+            if ("증권신고서(지분증권)" in nm or "철회신고서" in nm) and f.get("corp_cls") in ("E", "N"):
                 out.append(f)
         if page >= int(res.get("total_page", 1)):
             break
@@ -138,6 +140,16 @@ def main():
             changed = True
             continue
         print(f"{f['corp_name']} · {f['report_nm']} · {rno}")
+        if "철회" in f["report_nm"]:
+            if x is not None and not x.get("cancel"):
+                x["cancel"] = f"{rdt[:4]}-{rdt[4:6]}-{rdt[6:]}"
+                x["dart_seen"] = rno
+                if rno not in seen_notice:
+                    notices.insert(0, {"date": f"{rdt[4:6]}/{rdt[6:]}", "rcept_no": rno,
+                                       "text": f"{x['n']} 상장 철회 (일반 청약 취소)"})
+                    seen_notice.add(rno)
+                changed = True
+            continue
         info = detail(f["corp_code"], rdt)
         date_txt = f"{rdt[4:6]}/{rdt[6:]}"
         if x is None:

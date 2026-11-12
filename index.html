@@ -138,6 +138,15 @@ details[open]>summary .chev{transform:rotate(180deg)}
 .live-b b{font-size:15px}
 .live-b .links{display:flex;gap:14px;flex-wrap:wrap}
 .live-b .links a{color:var(--sub-ink);font-weight:700;text-underline-offset:3px}
+.lb{flex-direction:row!important;justify-content:space-between;align-items:center;gap:12px;border-bottom:1px dashed var(--line)}
+.lb-l{display:flex;flex-direction:column;gap:2px;min-width:0}
+.lk{color:var(--muted);font-size:13.5px}
+.lb strong{font-size:18px;font-weight:800}
+.go{flex:none;background:var(--sub);color:#fff;font-weight:800;border-radius:12px;padding:10px 16px;text-decoration:none;font-size:15px}
+.rf{border:1px solid var(--sub);background:var(--card);color:var(--sub-ink);border-radius:999px;padding:3px 12px;font-size:13px;font-weight:500}
+.calc{font-size:13px;color:var(--soft);display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-top:4px}
+.calc input{width:110px;border:1px solid var(--line);border-radius:6px;padding:3px 8px;background:var(--card)}
+.calc b{color:var(--sub-ink)}
 .live-b small{color:var(--muted);font-size:12.5px;border-top:1px dashed var(--line);padding-top:6px;margin-top:4px}
 .rows{display:flex;flex-direction:column}
 .rh{font-size:13px;font-weight:700;color:var(--muted);padding:6px 0 2px}
@@ -295,7 +304,7 @@ const APPS={"한국투자증권":"한국투자","미래에셋증권":"M-STOCK","
 const HOLI=new Set(["2026-12-25","2027-01-01"]);
 const EN=["JANUARY","FEBRUARY","MARCH","APRIL","MAY","JUNE","JULY","AUGUST","SEPTEMBER","OCTOBER","NOVEMBER","DECEMBER"];
 const WD="일월화수목금토";
-let IPOS=[], META={};
+let IPOS=[], META={}, LIVE={};
 const now=new Date();const TODAY=new Date(now.getFullYear(),now.getMonth(),now.getDate());
 const D=s=>{const [y,m,d]=s.split("-").map(Number);return new Date(y,m-1,d)};
 const key=d=>`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;
@@ -317,6 +326,7 @@ const deposit=x=>price(x)*minq(x)*0.5;
 const fcText=x=>x.fc?md(x.fc).replace(/\(.\)/,""):"청약 2~3일 전";
 
 function judge(x){
+  if(x.cancel)return{v:"cancel"};
   if(x.spac)return{v:"spac"};
   const hi=x.band&&x.band[1], lo=x.band&&x.band[0];
   const r1=x.fix!=null&&hi?x.fix>=hi:null, r2=x.inst!=null?x.inst>=200:null;
@@ -335,6 +345,7 @@ function judge(x){
 }
 
 function badge(x,j){
+  if(j.v==="cancel")return`<span class="badge n">상장 철회</span>`;
   if(j.v==="fail")return`<span class="badge r">탈락</span>`;
   if(j.v==="spac")return`<span class="badge n">스팩</span>`;
   if(j.v!=="pass")return`<span class="badge a">결과 대기</span>`;
@@ -346,6 +357,7 @@ function badge(x,j){
 function stat(x){
   const p=price(x);
   if(!x.s)return`<small>일정 확인 중</small><strong>-</strong>`;
+  if(x.cancel)return`<small>청약 취소</small><strong>상장 철회</strong><small>${md(x.cancel)} 철회신고서 제출</small>`;
   if(x.l&&TK===x.l)return`<small>상장 대기중</small><strong class="blue">오늘 상장</strong><small>9시 시초가 확인 전 · 확정공모가 ${won(x.fix||p)}원</small>`;
   if(x.l&&TK>x.l)return`<small>상장 완료</small><strong>${md(x.l)}</strong><small>확정공모가 ${won(x.fix||p)}원</small>`;
   if(TK>x.e)return`<small>상장 대기중</small><strong class="blue">${x.l?md(x.l)+" 상장":"상장일 미정"}</strong><small>${x.l?"D-"+days(TK,x.l)+" · ":""}확정공모가 ${won(x.fix||p)}원</small>`;
@@ -353,6 +365,7 @@ function stat(x){
 }
 
 function vbox(x,j){
+  if(j.v==="cancel")return`<div class="vbox n"><b style="color:var(--ink);display:block;margin-bottom:4px">${md(x.cancel)}에 회사가 상장을 철회했습니다</b>일반 청약은 열리지 않습니다. 이미 청약금을 넣었다면 증권사가 돌려줍니다.</div>`;
   if(j.v==="spac")return`<div class="vbox n">스팩은 공모가 2,000원 고정이라 이 기준을 쓰지 않습니다. 합병 소식이 없으면 보통 2,000원 근처에서 움직입니다.</div>`;
   if(j.v==="fail")return`<div class="vbox r"><b>탈락 이유 ${j.why.length}가지</b><ol>${j.why.map((w,i)=>`<li>${i+1}. ${w}</li>`).join("")}</ol></div>`;
   if(j.v==="wait")return`<div class="vbox a">아직 수요예측 결과가 나오지 않았습니다. ${x.fc?`수요예측이 끝나고 ${fcText(x)}에`:"청약 2~3일 전쯤"} 확정공모가·기관경쟁률·의무보유확약이 발표되고, 그때 통과 여부가 정해집니다.</div>`;
@@ -362,7 +375,7 @@ function vbox(x,j){
 }
 
 function rows(x,j){
-  if(j.v==="spac")return"";
+  if(j.v==="spac"||j.v==="cancel")return"";
   const ic=v=>v===true?`<span class="ico y">✓</span>`:v===false?`<span class="ico x">✕</span>`:`<span class="ico u">·</span>`;
   const vc=v=>v===false?" x":v==null?" u":"";
   const pre=x.fix==null&&x.inst==null;
@@ -378,10 +391,25 @@ function rows(x,j){
   </div>`;
 }
 
+function liveTime(at){if(!at)return"";const m=at.match(/(\d+)-(\d+)-(\d+)T(\d+):(\d+)/);if(!m)return at;const h=+m[4];return`${+m[2]}/${+m[3]} ${h<12?"오전":"오후"} ${String(h%12||12).padStart(2,"0")}:${m[5]}`}
+const fmt2=n=>Number(n).toLocaleString("ko-KR",{maximumFractionDigits:2});
+function estOf(L){if(!L)return null;if(L.est!=null)return L.est;if(L.alloc&&L.count)return L.alloc*0.5/L.count;return null}
 function live(x){
-  if(!(x.s&&TK>=x.s&&TK<=x.e))return"";
-  const t=`${now.getHours()<12?"오전":"오후"} ${now.getHours()%12||12}:${String(now.getMinutes()).padStart(2,"0")}`;
-  return`<div class="live"><div class="live-h">증권사별 실시간 경쟁률</div>${(x.b||[]).map(b=>`<div class="live-b"><b>${esc(b)}</b><span>「${esc(APPS[b]||b)}」 앱에서 직접 확인</span><div class="links"><a href="https://play.google.com/store/search?q=${encodeURIComponent(APPS[b]||b)}&c=apps" target="_blank" rel="noopener">안드로이드 앱 ↗</a><span class="note">아이폰은 App Store에서 「${esc(APPS[b]||b)}」 검색</span></div></div>`).join("")}<div class="live-b" style="padding-top:0"><small>${t} 기준 · 숫자는 계속 바뀌고, 마감 직전에 가장 크게 오릅니다</small></div></div>`;
+  if(!(x.s&&TK>=x.s&&TK<=x.e)||x.cancel)return"";
+  const LV=(LIVE.items||{})[x.n]||{};
+  const ats=Object.values(LV).map(l=>l.at).filter(Boolean).sort();const at=ats[ats.length-1];
+  const blocks=(x.b||[]).map(b=>{const L=LV[b]||{};const est=estOf(L);const app=APPS[b]||b;
+    return`<div class="live-b lb">
+      <div class="lb-l">
+        <b>${esc(b)}</b>
+        <div><span class="lk">총 경쟁률</span> <strong class="tnum">${L.rate!=null?fmt2(L.rate)+" : 1":"집계 전"}</strong></div>
+        <div><span class="lk">균등 예상</span> <strong class="tnum">${est!=null?fmt2(est)+"주":"-"}</strong></div>
+        ${L.alloc?`<label class="calc">앱에서 본 청약 건수 <input type="number" inputmode="numeric" min="1" id="cnt-${esc(x.n)}-${esc(b)}" data-calc="${L.alloc}" data-out="out-${esc(x.n)}-${esc(b)}" placeholder="건"> → <b id="out-${esc(x.n)}-${esc(b)}">-</b></label>`:""}
+      </div>
+      <a class="go" href="https://play.google.com/store/search?q=${encodeURIComponent(app)}&c=apps" target="_blank" rel="noopener">청약하러 가기</a>
+    </div>`}).join("");
+  return`<div class="live"><div class="live-h">증권사별 실시간 경쟁률<button class="rf" data-refresh="1">새로고침</button></div>${blocks}
+   <div class="live-b" style="padding-top:0"><small>${at?liveTime(at)+" 기준 · ":""}숫자는 계속 바뀌고, 마감 직전에 가장 크게 오릅니다. 지금 숫자는 「${esc((x.b||[]).map(b=>APPS[b]||b).join("」·「"))}」 앱의 공모주 청약 화면에서 볼 수 있어요.</small></div></div>`;
 }
 
 function card(x,open){
@@ -430,7 +458,7 @@ function renderCal(){
     const wk=[...Array(7)].map((_,i)=>{const d=new Date(ws);d.setDate(d.getDate()+i);return d});
     const wsK=key(wk[0]),weK=key(wk[6]);const segs=[];
     IPOS.forEach(x=>{
-      const j=judge(x);if(j.v==="fail")return;
+      const j=judge(x);if(j.v==="fail"||j.v==="cancel")return;
       const wait=j.v!=="pass", mine=me.marks[x.n]?" mine":"";
       if(x.s&&x.e>=wsK&&x.s<=weK)segs.push({a:x.s<wsK?wsK:x.s,b:x.e>weK?weK:x.e,cls:(wait?"w":"s")+mine,lab:"청약",n:x.n});
       if(x.l&&x.l>=wsK&&x.l<=weK)segs.push({a:x.l,b:x.l,cls:(wait?"w":"l")+mine,lab:"상장",n:x.n});
@@ -449,22 +477,23 @@ function renderList(){
   const mk=`${viewY}-${String(viewM+1).padStart(2,"0")}`;
   const list=IPOS.filter(x=>x.s&&x.s.startsWith(mk));
   const pass=[],wait=[],fail=[];
-  list.forEach(x=>{const v=judge(x).v;(v==="pass"?pass:v==="fail"?fail:wait).push(x)});
+  const cancel=[];
+  list.forEach(x=>{const v=judge(x).v;(v==="pass"?pass:v==="fail"?fail:v==="cancel"?cancel:wait).push(x)});
   document.getElementById("listTitle").textContent=`${viewM+1}월 청약 공모주`;
-  document.getElementById("listCount").textContent=`${list.length}건 · 통과 ${pass.length} · 대기 ${wait.length} · 탈락 ${fail.length}`;
+  document.getElementById("listCount").textContent=`${list.length}건 · 통과 ${pass.length} · 대기 ${wait.length} · 탈락 ${fail.length}${cancel.length?" · 철회 "+cancel.length:""}`;
   const openIt=x=>{const j=judge(x).v;return j==="pass"&&!(x.l&&TK>x.l)||(x.s&&TK>=x.s&&TK<=x.e)};
   const main=[...pass,...wait];
   document.getElementById("cards").innerHTML=main.length?main.map(x=>card(x,openIt(x))).join(""):(fail.length?"":`<div class="empty">이 달에 시작하는 청약이 없어요.</div>`);
-  const ff=document.getElementById("failFold");ff.hidden=!fail.length;
-  document.getElementById("failTitle").innerHTML=`탈락 종목 ${fail.length}건<small>${ff.open?"접기":"펼치기"}</small>`;
-  document.getElementById("failCards").innerHTML=fail.map(x=>card(x,true)).join("");
+  const ff=document.getElementById("failFold");const out=[...fail,...cancel];ff.hidden=!out.length;
+  document.getElementById("failTitle").innerHTML=`${cancel.length?"탈락·철회 종목":"탈락 종목"} ${out.length}건<small>${ff.open?"접기":"펼치기"}</small>`;
+  document.getElementById("failCards").innerHTML=out.map(x=>card(x,true)).join("");
 }
 
 function renderTodo(){
   const end=new Date(TODAY);end.setDate(end.getDate()+6);const EK=key(end);
   const inWin=k=>k&&k>=TK&&k<=EK, items=[];
   IPOS.forEach(x=>{
-    const j=judge(x),mk=me.marks[x.n];
+    const j=judge(x),mk=me.marks[x.n];if(j.v==="cancel")return;
     const tag=j.v==="pass"?`<b style="color:var(--green-ink)">통과</b>`:j.v==="fail"?`<span style="color:var(--red-ink)">탈락</span>`:"결과 대기";
     if(x.s&&x.e>=TK&&x.s<=EK)items.push({k:x.s<TK?TK:x.s,o:1,h:`<button class="tlink" data-go="${esc(x.n)}">${esc(x.n)}</button> 청약 ${x.s<=TK?(TK===x.e?"오늘 16시 마감":md(x.e)+" 16시까지"):"시작 (~"+md(x.e)+")"} · ${tag}`,s:`${(x.b||[]).join(", ")} · 준비금 ${price(x)?won(deposit(x))+"원":"-"} (최소 ${minq(x)}주)`});
     if(inWin(x.fc)&&j.v==="wait")items.push({k:x.fc,o:0,h:`<button class="tlink" data-go="${esc(x.n)}">${esc(x.n)}</button> 수요예측 결과 발표`,s:"확정공모가·기관경쟁률이 나오면 통과 여부가 정해져요"});
@@ -494,7 +523,7 @@ function renderMeta(){
   if(META.updated){const m=META.updated.match(/(\d+)-(\d+)-(\d+)T(\d+):(\d+)/);if(m){const h=+m[4];t=`${+m[2]}. ${+m[3]}. ${h<12?"오전":"오후"} ${String(h%12||12).padStart(2,"0")}:${m[5]}`}}
   document.getElementById("foot").innerHTML=`기준 시각 ${t}<br>공모 일정과 공모가는 증권신고서 정정에 따라 바뀔 수 있습니다. 이 화면은 정해진 기준에 따른 분류 결과일 뿐 투자 권유가 아니며, 청약 여부는 본인이 판단해 결정해 주세요.`;
   const n=(META.notices||[]).slice(0,4),el=document.getElementById("notices");
-  if(n.length){el.hidden=false;el.innerHTML=`<b>최근 DART 공시</b>`+n.map(x=>`<a href="https://dart.fss.or.kr/dsaf001/main.do?rcpNo=${esc(x.rcept_no)}" target="_blank" rel="noopener">${esc(x.date)} · ${esc(x.text)}</a>`).join("")}
+  if(n.length){el.hidden=false;el.innerHTML=`<b>최근 DART 공시</b>`+n.map(x=>x.rcept_no?`<a href="https://dart.fss.or.kr/dsaf001/main.do?rcpNo=${esc(x.rcept_no)}" target="_blank" rel="noopener">${esc(x.date)} · ${esc(x.text)}</a>`:`<span>${esc(x.date)} · ${esc(x.text)}</span>`).join("")}
 }
 
 function all(){renderCal();renderList();renderTodo();renderAccounts();renderMine()}
@@ -512,14 +541,17 @@ document.getElementById("failFold").addEventListener("toggle",renderFoldTitle);
 document.addEventListener("click",e=>{
   const t=e.target.closest("button");if(!t)return;
   if(t.dataset.go){e.preventDefault();go(t.dataset.go);return}
+  if(t.dataset.refresh){t.textContent="불러오는 중…";load().then(()=>keep(all)).catch(()=>{t.textContent="다시 시도"});return}
   if(t.dataset.acc){const b=t.dataset.acc;me.accounts=me.accounts.includes(b)?me.accounts.filter(a=>a!==b):[...me.accounts,b];save();keep(all);return}
   if(t.dataset.mark){const n=t.dataset.n,m=t.dataset.mark;if(me.marks[n]===m)delete me.marks[n];else me.marks[n]=m;save();keep(all);return}
   if(t.id==="prev"||t.id==="next"){viewM+=t.id==="prev"?-1:1;if(viewM<0){viewM=11;viewY--}if(viewM>11){viewM=0;viewY++}renderCal();renderList();return}
   if(t.id==="thism"){viewY=TODAY.getFullYear();viewM=TODAY.getMonth();renderCal();renderList()}
 });
+document.addEventListener("input",e=>{const t=e.target;if(t.dataset.calc){const c=+t.value,o=document.getElementById(t.dataset.out);if(o)o.textContent=c>0?fmt2(+t.dataset.calc*0.5/c)+"주":"-"}});
 document.addEventListener("change",e=>{const t=e.target;if(t.dataset.al){me.alloc[t.dataset.al]=t.value;save();renderMine()}if(t.dataset.se){me.sell[t.dataset.se]=t.value;save();renderMine()}});
 
-fetch("data.json?t="+Date.now()).then(r=>r.json()).then(d=>{META=d;IPOS=(d.ipos||[]).slice().sort((a,b)=>(a.s||"9")<(b.s||"9")?-1:1);renderMeta();all()})
+function load(){return Promise.all([fetch("data.json?t="+Date.now()).then(r=>r.json()),fetch("live.json?t="+Date.now()).then(r=>r.ok?r.json():{}).catch(()=>({}))]).then(([d,l])=>{META=d;LIVE=l||{};IPOS=(d.ipos||[]).slice().sort((a,b)=>(a.s||"9")<(b.s||"9")?-1:1);renderMeta()})}
+load().then(all)
  .catch(()=>{document.getElementById("foot").textContent="일정 파일(data.json)을 못 불러왔어요. 잠시 뒤 새로고침해 보세요."});
 </script>
 </body>
